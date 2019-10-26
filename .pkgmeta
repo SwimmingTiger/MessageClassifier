@@ -1,6 +1,7 @@
 package-as: MessageClassifier
 
 ignore:
-    .*
-    *.md
-    doc
+    - .*
+    - *.md
+    - *.sh
+    - doc
