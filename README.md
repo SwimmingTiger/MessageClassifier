@@ -2,7 +2,7 @@ Description
 -----------------
 Simply filter duplicate messages in public channels and world channels.
 
-Download
+Download [![Build Status](https://travis-ci.com/SwimmingTiger/MessageClassifier.svg)](https://travis-ci.com/SwimmingTiger/MessageClassifier)
 -----------------
 * [CurseForge](https://www.curseforge.com/wow/addons/messageclassifier/files)
 
