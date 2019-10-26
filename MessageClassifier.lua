@@ -1,4 +1,5 @@
-local L = LibStub("AceLocale-3.0"):GetLocale(...)
+local ADDON_NAME = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(ADDON_NAME)
 
 local messageGUIDIndexs = {}
 local messageFrameGUIDs = {}
@@ -33,7 +34,7 @@ function MessageClassifier.chatFilter(frame, event, msg, authorWithServer, unkno
     end]]
 
     -- Pass the message sent by the player self.
-    if MessageClassifierConfig.passPlayerSelf and playerGUID == UnitGUID("player") then
+    if playerGUID == UnitGUID("player") then
         return false
     end
 
@@ -89,7 +90,6 @@ function MessageClassifier.Toggle(enabled)
     else
         MessageClassifier.Enable()
     end
-    MessageClassifierConfigFrame:update()
 end
 
 function MessageClassifier.Reset()
