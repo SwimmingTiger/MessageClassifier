@@ -1,39 +1,4 @@
-local L = {}
-
-if GetLocale()=='zhCN' then
-	L["CONFIG_TEXT_FONT"] = "Fonts/ARKai_T.ttf"
-    L["CONFIG_PAGE_TITLE"] = "聊天消息去重"
-    L["OPTION_ENABLED"] = "启用重复消息过滤"
-    L["OPTION_ENABLED_TOOLTIP"] = "不显示公共频道/世界频道中重复的消息"
-    L["OPTION_PASS_PLAYER_SELF"] = "不过滤自己发送的消息"
-    L["OPTION_PASS_PLAYER_SELF_TOOLTIP"] = "不过滤玩家自己发送的消息（备注：即使不选中该选项，重复消息也会被发出去，只是不会在聊天窗口显示）"
-    L["OPTION_MIN_DUP_INTERVAL"] = "允许重复消息出现的最短间隔秒数，设为0始终禁止重复消息"
-    L["OPTION_RESET"] = "重置过滤器"
-    L["OPTION_RESET_TOOLTIP"] = "清除重复消息记录，允许重复消息再次显示"
-
-elseif GetLocale()=='zhTW' then
-	L["CONFIG_TEXT_FONT"] = "Fonts/bKAI00M.ttf"
-	L["CONFIG_PAGE_TITLE"] = "聊天消息去重"
-    L["OPTION_ENABLED"] = "啓用重複消息過濾"
-    L["OPTION_ENABLED_TOOLTIP"] = "不顯示公共頻道/世界頻道中重複的消息"
-    L["OPTION_PASS_PLAYER_SELF"] = "不過濾自己發送的消息"
-    L["OPTION_PASS_PLAYER_SELF_TOOLTIP"] = "不過濾玩家自己發送的消息（備註：即使不選中該選項，重復消息也會被發出去，只是不會在聊天窗口顯示）"
-    L["OPTION_MIN_DUP_INTERVAL"] = "允許重復消息出現的最短間隔秒數，設為0始終禁止重複消息"
-    L["OPTION_RESET"] = "重置過濾器"
-    L["OPTION_RESET_TOOLTIP"] = "清除重復消息記錄，允許重復消息再次顯示"
-
-else
-	L["CONFIG_TEXT_FONT"] = "Fonts/FRIZQT__.ttf"
-	L["CONFIG_PAGE_TITLE"] = "Message Deduplication"
-    L["OPTION_ENABLED"] = "Enable duplicate message filter"
-    L["OPTION_ENABLED_TOOLTIP"] = "Do not display duplicate messages in public channel/world channels"
-    L["OPTION_PASS_PLAYER_SELF"] = "Do not filter messages sent by yourself"
-    L["OPTION_PASS_PLAYER_SELF_TOOLTIP"] = "Do not filter the messages sent by the player self (Note: even if this option is not enabled, the duplicate message will be sent, but will not be displayed in the chat window)"
-    L["OPTION_MIN_DUP_INTERVAL"] = "Min seconds for duplicate messages appear, 0 to always hide"
-    L["OPTION_RESET"] = "Reset filter"
-    L["OPTION_RESET_TOOLTIP"] = "Clear duplicate message records, allowing duplicate messages to be displayed again"
-end
-
+local L = LibStub("AceLocale-3.0"):GetLocale(...)
 
 MessageClassifierConfig = {}
 
@@ -49,7 +14,7 @@ local function textFactory(parent, value, size)
     -- Different languages require different fonts, and 
     -- using inappropriate fonts will result in text not displaying correctly.
     -- So the choice of font needs to be localized.
-    text:SetFont(L["CONFIG_TEXT_FONT"], size)
+    text:SetFont(STANDARD_TEXT_FONT, size)
     text:SetJustifyV("CENTER")
     text:SetJustifyH("CENTER")
     text:SetText(value)

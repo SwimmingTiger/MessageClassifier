@@ -1,24 +1,4 @@
-local L = {}
-
-if GetLocale()=='zhCN' then
-	L["ENABLE_TIPS"] = "公共频道/世界频道消息去重：已启用，可用 /msgdd 命令进行开关。"
-	L["ENABLE_TIPS_WITH_BIGFOOT"] = "公共频道/世界频道消息去重：已启用，可在小地图大脚按键包中关闭"
-	L["DISABLE_TIPS"] = "公共频道/世界频道消息去重：已停用"
-	L["RESET_TIPS"] = "公共频道/世界频道消息去重：过滤器已重置"
-
-elseif GetLocale()=='zhTW' then
-	L["ENABLE_TIPS"] = "公共頻道/世界頻道消息去重：已啓用，可用 /msgdd 命令進行開關。"
-	L["ENABLE_TIPS_WITH_BIGFOOT"] = "公共頻道/世界頻道消息去重：已啓用，可在小地圖大腳按鍵包中關閉"
-	L["DISABLE_TIPS"] = "公共頻道/世界頻道消息去重：已停用"
-	L["RESET_TIPS"] = "公共頻道/世界頻道消息去重：過濾器已重置"
-
-else
-	L["ENABLE_TIPS"] = "Public channel/World channel message deduplication: Enabled. You can toggle it with command /msgdd"
-	L["ENABLE_TIPS_WITH_BIGFOOT"] ="Public channel/World channel message deduplication: Enabled. You can turn it off in the minimap BigFoot button package."
-	L["DISABLE_TIPS"] ="Public channel/World channel message deduplication: Disabled"
-	L["RESET_TIPS"] = "Public channel/World channel message deduplication: Filter has been reset"
-end
-
+local L = LibStub("AceLocale-3.0"):GetLocale(...)
 
 local messageGUIDIndexs = {}
 local messageFrameGUIDs = {}
