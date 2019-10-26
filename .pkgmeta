@@ -2,3 +2,5 @@ package-as: MessageClassifier
 
 ignore:
     .*
+    *.md
+    doc
