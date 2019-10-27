@@ -2,6 +2,13 @@ local L = LibStub("AceLocale-3.0"):NewLocale(..., "enUS", true, nil)
 if not L then return end
 
 L = L or {}
+-- Browser
+L["BROWSER_CLASSIFIED_BY_AUTHOR"] = "By Author/%s"
+L["BROWSER_CLASSIFIED_BY_CHANNEL"] = "By Channel/%s"
+L["BROWSER_CLASSIFIED_BY_TIME"] = "By Time"
+L["BROWSER_STATUS_BAR"] = "All messages %d, unique %d, duplicate %d, duplicate rate %0.2f%%"
+L["BROWSER_TITLE"] = "Message Browser"
+
 -- MessageClassifier
 L["DISABLE_TIPS"] = "Public channel/World channel message deduplication: Disabled"
 L["ENABLE_TIPS"] = "Public channel/World channel message deduplication: Enabled. You can toggle it with command /msgdd"

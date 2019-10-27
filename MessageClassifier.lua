@@ -7,7 +7,6 @@ local messageFrameGUIDs = {}
 MessageClassifier = CreateFrame("Frame")
 MessageClassifier.enabled = false
 
-
 local function StringHash(text)
     local counter = 1;
     local len = string.len(text); 
@@ -27,11 +26,10 @@ function MessageClassifier.chatFilter(frame, event, msg, authorWithServer, unkno
     end
 
     -- per message
-    -- TODO: finish it
-    --[[if messageGUIDIndexs[guid] ~= index then
-        MessageClassifier.addMessage(frame, event, msg, authorWithServer, unknown1, channelTitle, author, unknown2, unknown3, unknown4, channelName, unknown5, index, guid, ...)
+    if messageGUIDIndexs[guid] ~= index then
+        MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelName, playerGUID, guid)
         messageGUIDIndexs[guid] = index
-    end]]
+    end
 
     -- Pass the message sent by the player self.
     if playerGUID == UnitGUID("player") then
@@ -50,15 +48,6 @@ function MessageClassifier.chatFilter(frame, event, msg, authorWithServer, unkno
     
     messageFrameGUIDs[frame][guid] = msgTime
     return false
-end
-
-function MessageClassifier.addMessage(frame, event, msg, authorWithServer, unknown1, channelTitle, author, unknown2, unknown3, unknown4, channelName, unknown5, index, guid, ...)
-    local realmPrefix = '-'..GetRealmName()
-    if authorWithServer:sub(-realmPrefix:len(), -1) == realmPrefix then
-        -- Same as the player's realm, remove the suffix
-        authorWithServer = authorWithServer:sub(1, -realmPrefix:len() - 1)
-    end
-    --print(guid, index, authorWithServer, msg, frame, event)
 end
 
 function MessageClassifier.Enable()

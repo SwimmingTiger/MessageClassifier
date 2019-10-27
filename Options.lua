@@ -6,6 +6,64 @@ MessageClassifierConfig = {}
 local defaultConfig = {
     ["enabled"] = true,
     ["minDupInterval"] = 0,
+    ["classificationRules"] = {
+        --[[
+        -- Fields and values:
+        {
+            expressions = {
+                field: "author",
+                       "channel"
+                       "msg"
+
+                operator: "equal"
+                          "not equal"
+                          "contain"
+                          "not contain"
+                          "match"
+                          "not match"
+                          "unconditional"
+
+                value: <string>
+                       <regular expression>
+                       Example: "molten"
+                                " AA "
+                                "15g"
+                                "%bAA%b"
+                                "%d+g%b"
+                
+                caseSensitive: true
+                               false
+            }
+
+            class: <string>,
+                    Available variables: {author}
+                                         {channel},
+                    Example: "RAID"
+                             "Sell"
+                             "Quest"
+                             "The Molten Core"
+                             "By Author/{author}"
+                             "By Channel/{channel}"
+        }]]
+        {
+            expressions = {
+                { operator = "unconditional" },
+            },
+            class = L["BROWSER_CLASSIFIED_BY_AUTHOR"]:format("{author}")
+        },
+        {
+            expressions = {
+                { operator = "unconditional" },
+            },
+            class = L["BROWSER_CLASSIFIED_BY_CHANNEL"]:format("{channel}")
+        },
+        {
+            expressions = {
+                { operator = "unconditional" },
+            },
+            class = L["BROWSER_CLASSIFIED_BY_TIME"]
+        },
+    }
 }
 
 MessageClassifierConfigFrame = CreateFrame("Frame", "MessageClassifierConfigFrame", UIParent)

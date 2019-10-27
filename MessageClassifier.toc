@@ -21,4 +21,5 @@ locale\zhCN.lua
 locale\zhTW.lua
 
 Options.lua
+MessageBrowser.lua
 MessageClassifier.lua
