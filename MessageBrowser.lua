@@ -5,9 +5,12 @@ local AceGUI = LibStub("AceGUI-3.0")
 MessageClassifierBrowser = AceGUI:Create("Frame")
 MessageClassifierBrowser.messages = {}
 MessageClassifierBrowser.messageClass = {}
+MessageClassifierBrowser.messageTreeIndex = {}
+MessageClassifierBrowser.messageViewIndex = {}
 MessageClassifierBrowser.allMessages = 0
 MessageClassifierBrowser.uniqueMessages = 0
 MessageClassifierBrowser.duplicateMessages = 0
+MessageClassifierBrowser.sortViewQueue = {}
 
 local function deepCompare(t1,t2,ignore_mt)
     local ty1 = type(t1)
@@ -55,6 +58,39 @@ local function split(str, d)
 	return lst
 end
 
+local function msgComp(a, b)
+    return  a.updateTime > b.updateTime
+end
+
+local lastSortTime = GetTime()
+local function sortAndRefreshViews()
+    local now = GetTime()
+    if now - lastSortTime < 5 then return end
+
+    if tableLen(MessageClassifierBrowser.sortViewQueue) > 0 then
+        for _,v in pairs(MessageClassifierBrowser.sortViewQueue) do
+            table.sort(v, msgComp)
+        end
+        MessageClassifierBrowser.sortViewQueue = {}
+        MessageClassifierBrowser.classTree:RefreshTree()
+    end
+    MessageClassifierBrowser:updateStatusBar()
+
+    lastSortTime = now
+end
+local updateFrame = CreateFrame("Frame")
+updateFrame:SetScript("OnUpdate", sortAndRefreshViews)
+
+function MessageClassifierBrowser:sortMessageView(view)
+    if view and view.parent then
+        view.parent.updateTime = view.updateTime
+        if view.parent.children then
+            self.sortViewQueue[view.parent.children] = view.parent.children
+            self:sortMessageView(view.parent)
+        end
+    end
+end
+
 function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelName, playerGUID, guid)
     if authorWithServer == author .. '-' .. GetRealmName() then
         -- Same as the player's realm, remove the suffix
@@ -66,9 +102,7 @@ function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, chan
             guid = guid,
             author = authorWithServer,
             msg = msg,
-            channels = {
-                [channelName] = true
-            },
+            channel = channelName,
             updateTime = time(),
             count = 1,
         }
@@ -79,70 +113,69 @@ function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, chan
         self.messages[guid].count = self.messages[guid].count + 1
         self.duplicateMessages = self.duplicateMessages + 1
 
-        if not self.messages[guid].channels[channelName] then
-            self.messages[guid].channels[channelName] = true
-            self:updateMessageClass(guid)
+        for _, v in pairs(self.messageViewIndex[guid]) do
+            v.updateTime = self.messages[guid].updateTime
+            self:sortMessageView(v)
         end
     end
-    self:updateStatusBar()
 end
 
 function MessageClassifierBrowser:updateMessageClass(guid)
     if not self.messages[guid] then return end
     
     local msg = self.messages[guid]
-
-    local newClass = self:getMessageClass(msg, MessageClassifierConfig.classificationRules)
-    if deepCompare(msg.class, newClass) then
-        return
-    end
-    self:removeMessageFromClass(msg, msg.class, self.messageClass)
-    msg.class = newClass
-
-    MessageClassifierBrowser:addMessageToClass(msg, msg.class, self.messageClass)
+    msg.class = self:getMessageClass(msg, MessageClassifierConfig.classificationRules)
+    self:addMessageToClass(msg, msg.class, self.messageClass)
+    self.classTree:SetTree(self.messageClass)
 end
 
-function MessageClassifierBrowser:addMessageToClass(msg, classTree, messageTree)
-    local guid = msg.guid
-    for key, class in pairs(classTree) do
-        if type(class) == 'table' then
-            if type(messageTree[key]) ~= 'table' then
-                messageTree[key] = {}
+function MessageClassifierBrowser:addMessageToClass(msg, classPath, messageTree)
+    for k in pairs(classPath) do
+        local parts = split(k, '/')
+        local path = nil
+        local parentNode = messageTree
+        local parent = parentNode
+        for _, v in pairs(parts) do
+            path = path and path..'/'..v or v
+            if not self.messageTreeIndex[path] then
+                local index = #parent + 1
+                parent[index] = {
+                    text = v,
+                    value = v,
+                    children = {},
+                    parent = parentNode,
+                    updateTime = msg.updateTime,
+                }
+                self.messageTreeIndex[path] = parent[index]
             end
-            self:addMessageToClass(msg, class, messageTree[key])
-        else
-            if type(messageTree[class]) ~= 'table' then
-                messageTree[class] = {}
-            end
-            if not messageTree[class][guid] then
-                messageTree[class][guid] = msg
-            end
+            parentNode = self.messageTreeIndex[path]
+            parent = parentNode.children
         end
     end
-end
-
-function MessageClassifierBrowser:removeMessageFromClass(msg, classTree, messageTree)
-    if type(classTree) ~= 'table' then return end
-
-    local guid = msg.guid
-    for key, class in pairs(classTree) do
-        if type(class) == 'table' then
-            if type(messageTree[key]) == 'table' then
-                self:removeMessageFromClass(msg, class, messageTree[key])
+    
+    for k in pairs(classPath) do
+        if self.messageTreeIndex[k].children then
+            local parentNode = self.messageTreeIndex[k]
+            local parent = parentNode.children
+            local index = #(parent) + 1
+            parent[index] = {
+                text = msg.msg,
+                value = msg.guid,
+                parent = parentNode,
+                msg = msg,
+                updateTime = msg.updateTime,
+            }
+            if not self.messageViewIndex[msg.guid] then
+                self.messageViewIndex[msg.guid] = {}
             end
-        else
-            if messageTree[class][guid] then
-                messageTree[class][guid] = nil
-            end
-            if tableLen(messageTree[class]) == 0 then
-                messageTree[class] = nil
-            end
+            self.messageViewIndex[msg.guid][#self.messageViewIndex[msg.guid]] = parent[index]
+            self:sortMessageView(parent[index])
         end
     end
 end
 
 function MessageClassifierBrowser:getMessageClass(msg, ruleSet)
-    local classTree = {}
+    local classPath = {}
 
     for _, rule in pairs(ruleSet) do
         local match = false
@@ -189,35 +222,20 @@ function MessageClassifierBrowser:getMessageClass(msg, ruleSet)
             end
 
             if class:find('{channel}') then
-                for channel in pairs(msg.channels) do
-                    local classWithChannel = class:gsub('{channel}', channel)
-                    self:mergeClassTree(msg, classTree, split(classWithChannel, '/'))
-                end
-            else
-                self:mergeClassTree(msg, classTree, split(class, '/'))
+                class = class:gsub('{channel}', msg.channel)
             end
+
+            classPath[class] = true
         end
     end
 
-    return classTree
-end
-
-function MessageClassifierBrowser:mergeClassTree(msg, classTree, class)
-    if #class <= 0 then return end
-
-    for i = 1, #class - 1 do
-        node = class[i]
-        if type(classTree[node]) ~= "table" then
-            classTree[node] = {}
-        end
-        classTree = classTree[node]
-    end
-
-    classTree[class[#class]] = class[#class]
+    return classPath
 end
 
 function MessageClassifierBrowser:updateAllMessageClass()
     self.messageClass = {}
+    self.messageTreeIndex = {}
+    self.messageViewIndex = {}
     for guid in pairs(self.messages) do
         self:updateMessageClass(guid)
     end
@@ -231,10 +249,6 @@ function MessageClassifierBrowser:updateStatusBar()
     ))
 end
 
-function MessageClassifierBrowser:addClassView(className)
-
-end
-
 MessageClassifierBrowser:SetTitle(L["BROWSER_TITLE"])
 MessageClassifierBrowser:updateStatusBar()
 MessageClassifierBrowser:SetLayout("Flow")
@@ -243,10 +257,19 @@ MessageClassifierBrowser.searchEdit = AceGUI:Create("EditBox")
 MessageClassifierBrowser.searchEdit:SetRelativeWidth(1)
 MessageClassifierBrowser:AddChild(MessageClassifierBrowser.searchEdit)
 
-MessageClassifierBrowser.classList = AceGUI:Create("ScrollFrame")
-MessageClassifierBrowser.classList:SetFullWidth(true)
-MessageClassifierBrowser.classList:SetFullHeight(true)
-MessageClassifierBrowser.classList:SetLayout("Fill")
-MessageClassifierBrowser:AddChild(MessageClassifierBrowser.classList)
+MessageClassifierBrowser.classTree = AceGUI:Create("TreeGroup")
+MessageClassifierBrowser.classTree:SetFullWidth(true)
+MessageClassifierBrowser.classTree:SetFullHeight(true)
+MessageClassifierBrowser.classTree:SetTree(MessageClassifierBrowser.messageClass)
+--MessageClassifierBrowser.classTree.treeframe:SetWidth(600)
+MessageClassifierBrowser.classTree:SetCallback("OnGroupSelected", function(self, event, group)
+    self:SelectByPath(group)
+end)
+MessageClassifierBrowser.classTree:SetLayout("Fill")
+MessageClassifierBrowser:AddChild(MessageClassifierBrowser.classTree)
+
+MessageClassifierBrowser.messageScrollView = AceGUI:Create("ScrollFrame")
+MessageClassifierBrowser.messageScrollView:SetLayout("List")
+MessageClassifierBrowser.classTree:AddChild(MessageClassifierBrowser.messageScrollView)
 
 MessageClassifierBrowser:Hide()
