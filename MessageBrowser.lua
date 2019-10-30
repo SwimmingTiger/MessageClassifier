@@ -82,10 +82,45 @@ local function dirname(str)
 	end
 end
 
+local function getColoredName(playerName, playerGUID)
+	local localizedClass, englishClass, localizedRace, englishRace, sex = GetPlayerInfoByGUID(playerGUID)
+	if (englishClass) then
+		local classColorTable = RAID_CLASS_COLORS[englishClass];
+		if (not classColorTable) then
+			return playerName;
+		end
+		return string.format("|cff%.2x%.2x%.2x%s|r", classColorTable.r*255, classColorTable.g*255, classColorTable.b*255, playerName)
+    end
+    return playerName
+end
+
+local function getColoredCount(count)
+    local color
+    if count < 5 then
+        color = "00cd00"
+    elseif count < 10 then
+        color = "ffa500"
+    else
+        color = "ff3030"
+    end
+	return string.format("|cff%s(%sx)|r ", color, count)
+end
+
 local function formatMsg(msg)
-    local text = string.format("%s [%s] %s", date("%H:%M:%S", msg.updateTime), msg.author, msg.msg)
+    local text = string.format("|cffffc0c0%s [|r%s|cffffc0c0]|r %s", date("%H:%M:%S", msg.updateTime), msg.author, msg.msg)
     if msg.count > 1 then
-        text = string.format("(%dx) %s", msg.count, text)
+        text = getColoredCount(msg.count)..text
+    end
+    return text
+end
+
+local function formatMsgAsTitle(msg, path)
+    local text = msg.msg
+    if not path:find(msg.author) then
+        text = string.format("|cffffc0c0[|r%s|cffffc0c0]|r %s", msg.author, text)
+    end
+    if msg.count > 1 then
+        text = getColoredCount(msg.count)..text
     end
     return text
 end
@@ -131,17 +166,18 @@ function MessageClassifierBrowser:sortMessageView(view)
 end
 
 function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelName, authorGUID, guid, guidInt)
-    if authorWithServer == author .. '-' .. GetRealmName() then
-        -- Same as the player's realm, remove the suffix
-        authorWithServer = author
-    end
     self.allMessages = self.allMessages + 1
     if not self.messages[guid] then
+        if authorWithServer ~= author .. '-' .. GetRealmName() then
+            -- From the other realm, add the suffix
+            author = authorWithServer
+        end
         local updateTime = GetTime() + self.baseTime
         self.messages[guid] = {
             guid = guid,
-            author = authorWithServer,
             authorGUID = authorGUID,
+            author = getColoredName(author, authorGUID),
+            authorWithServer = authorWithServer,
             msg = msg,
             channel = channelName,
             updateTime = updateTime,
@@ -159,6 +195,7 @@ function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, chan
             if self.msgViewContent == v.parent then
                 self:sortMessageView(v)
             end
+            v.text = formatMsgAsTitle(v.msg, v.path)
         end
     end
 end
@@ -202,7 +239,8 @@ function MessageClassifierBrowser:addMessageToTree(msg, classPath, messageTree)
             local parent = parentNode.children
             local index = #(parent) + 1
             parent[index] = {
-                text = formatMsg(msg),
+                path = k,
+                text = formatMsgAsTitle(msg, k),
                 value = msg.guid,
                 parent = parentNode,
                 msg = msg,
