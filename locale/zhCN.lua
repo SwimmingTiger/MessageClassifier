@@ -5,7 +5,7 @@ L = L or {}
 -- Browser
 L["BROWSER_CLASSIFIED_BY_AUTHOR"] = "玩家列表/%s"
 L["BROWSER_CLASSIFIED_BY_CHANNEL"] = "频道列表/%s"
-L["BROWSER_CLASSIFIED_BY_TIME"] = "时间逆序"
+L["BROWSER_CLASSIFIED_ALL_MESSAGES"] = "全部发言"
 L["BROWSER_STATUS_BAR"] = "共 %d 消息, 唯一 %d, 重复 %d, 重复率 %0.2f%%"
 L["BROWSER_TITLE"] = "消息浏览器"
 

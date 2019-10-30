@@ -91,7 +91,7 @@ local function formatMsg(msg)
 end
 
 local function msgComp(a, b)
-    return a.updateTime > b.updateTime
+    return a.order > b.order
 end
 
 local lastSortTime = GetTime()
@@ -122,7 +122,7 @@ updateFrame:SetScript("OnUpdate", sortAndRefreshViews)
 
 function MessageClassifierBrowser:sortMessageView(view)
     if view and view.parent then
-        view.parent.updateTime = view.updateTime
+        view.parent.order = view.order
         if view.parent.children then
             self.sortViewQueue[view.parent.children] = view.parent.children
             self:sortMessageView(view.parent)
@@ -130,22 +130,24 @@ function MessageClassifierBrowser:sortMessageView(view)
     end
 end
 
-function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelName, authorGUID, guid)
+function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelName, authorGUID, guid, guidInt)
     if authorWithServer == author .. '-' .. GetRealmName() then
         -- Same as the player's realm, remove the suffix
         authorWithServer = author
     end
     self.allMessages = self.allMessages + 1
     if not self.messages[guid] then
+        local updateTime = GetTime() + self.baseTime
         self.messages[guid] = {
             guid = guid,
             author = authorWithServer,
             authorGUID = authorGUID,
             msg = msg,
             channel = channelName,
-            updateTime = GetTime() + self.baseTime,
+            updateTime = updateTime,
             count = 1,
         }
+        self.messages[guid].order = updateTime * 4294967296 + guidInt
         self.uniqueMessages = self.uniqueMessages + 1
         self:updateMessageTree(guid)
     else
@@ -153,11 +155,11 @@ function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, chan
         self.messages[guid].count = self.messages[guid].count + 1
         self.duplicateMessages = self.duplicateMessages + 1
 
-        -- No longer update the time in the tree to prevent refreshing too fast
-        --[[for _, v in pairs(self.messageViewIndex[guid]) do
-            v.updateTime = self.messages[guid].updateTime
-            self:sortMessageView(v)
-        end]]
+        for _, v in pairs(self.messageViewIndex[guid]) do
+            if self.msgViewContent == v.parent then
+                self:sortMessageView(v)
+            end
+        end
     end
 end
 
@@ -185,7 +187,7 @@ function MessageClassifierBrowser:addMessageToTree(msg, classPath, messageTree)
                     value = v,
                     children = {},
                     parent = parentNode,
-                    updateTime = msg.updateTime,
+                    order = msg.order,
                 }
                 self.messageTreeIndex[path] = parent[index]
             end
@@ -204,7 +206,7 @@ function MessageClassifierBrowser:addMessageToTree(msg, classPath, messageTree)
                 value = msg.guid,
                 parent = parentNode,
                 msg = msg,
-                updateTime = msg.updateTime,
+                order = msg.order,
             }
             if not self.messageViewIndex[msg.guid] then
                 self.messageViewIndex[msg.guid] = {}
@@ -309,7 +311,7 @@ function MessageClassifierBrowser:updateMsgView()
     self.msgView:Clear()
     self.msgView.msgSize = #allMessages
     self.msgView:SetMaxLines(self.msgView.msgSize)
-    for i=self.msgView.msgSize, 1, -1 do
+    for i=1, self.msgView.msgSize do
         local msg = allMessages[i].msg
         self.msgView:AddMessage(formatMsg(msg))
     end
@@ -322,9 +324,9 @@ function MessageClassifierBrowser:CreateView()
     self:updateStatusBar()
     self:SetLayout("Flow")
 
-    self.searchEdit = AceGUI:Create("EditBox")
+    --[[self.searchEdit = AceGUI:Create("EditBox")
     self.searchEdit:SetRelativeWidth(1)
-    self:AddChild(self.searchEdit)
+    self:AddChild(self.searchEdit)]]
 
     self.msgTreeView = AceGUI:Create("TreeGroup")
     self.msgTreeView:SetFullWidth(true)

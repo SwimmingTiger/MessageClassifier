@@ -5,7 +5,7 @@ L = L or {}
 -- Browser
 L["BROWSER_CLASSIFIED_BY_AUTHOR"] = "By Author/%s"
 L["BROWSER_CLASSIFIED_BY_CHANNEL"] = "By Channel/%s"
-L["BROWSER_CLASSIFIED_BY_TIME"] = "By Time"
+L["BROWSER_CLASSIFIED_ALL_MESSAGES"] = "All Messages"
 L["BROWSER_STATUS_BAR"] = "All messages %d, unique %d, duplicate %d, duplicate rate %0.2f%%"
 L["BROWSER_TITLE"] = "Message Browser"
 

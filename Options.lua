@@ -66,7 +66,7 @@ local defaultConfig = {
             expressions = {
                 { operator = "unconditional" },
             },
-            class = L["BROWSER_CLASSIFIED_BY_TIME"]
+            class = L["BROWSER_CLASSIFIED_ALL_MESSAGES"]
         },
         {
             expressions = {

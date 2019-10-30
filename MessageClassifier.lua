@@ -27,7 +27,8 @@ function MessageClassifier.chatFilter(frame, event, msg, authorWithServer, unkno
 
     -- per message
     if messageGUIDIndexs[guid] ~= index then
-        MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelName, playerGUID, guid)
+        local guidInt = StringHash(guid)
+        MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelName, playerGUID, guid, guidInt)
         messageGUIDIndexs[guid] = index
     end
 
