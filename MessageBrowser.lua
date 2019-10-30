@@ -83,7 +83,11 @@ local function dirname(str)
 end
 
 local function formatMsg(msg)
-    return string.format("%s [%s] %s", date("%H:%M:%S", msg.updateTime), msg.author, msg.msg)
+    local text = string.format("%s [%s] %s", date("%H:%M:%S", msg.updateTime), msg.author, msg.msg)
+    if msg.count > 1 then
+        text = string.format("(%dx) %s", msg.count, text)
+    end
+    return text
 end
 
 local function msgComp(a, b)
@@ -149,10 +153,11 @@ function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, chan
         self.messages[guid].count = self.messages[guid].count + 1
         self.duplicateMessages = self.duplicateMessages + 1
 
-        for _, v in pairs(self.messageViewIndex[guid]) do
+        -- No longer update the time in the tree to prevent refreshing too fast
+        --[[for _, v in pairs(self.messageViewIndex[guid]) do
             v.updateTime = self.messages[guid].updateTime
             self:sortMessageView(v)
-        end
+        end]]
     end
 end
 
