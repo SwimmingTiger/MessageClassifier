@@ -33,6 +33,7 @@ local defaultConfig = {
                 
                 caseSensitive: true
                                false
+                               Default: false
             }
 
             class: <string>,
@@ -44,6 +45,10 @@ local defaultConfig = {
                              "The Molten Core"
                              "By Author/{author}"
                              "By Channel/{channel}"
+            
+            hideFromChatWindow: true
+                                false
+                                Default: false
         }]]
         {
             expressions = {
@@ -63,6 +68,56 @@ local defaultConfig = {
             },
             class = L["BROWSER_CLASSIFIED_BY_TIME"]
         },
+        {
+            expressions = {
+                {
+                    operator = "contain",
+                    field = "msg",
+                    value = "AA",
+                },
+            },
+            class = "AA/{author}"
+        },
+        {
+            expressions = {
+                {
+                    operator = "contain",
+                    field = "msg",
+                    value = "丝绸",
+                },
+            },
+            class = "收布/{author}"
+        },
+        {
+            expressions = {
+                {
+                    operator = "contain",
+                    field = "msg",
+                    value = "魔纹",
+                },
+            },
+            class = "收布/{author}"
+        },
+        {
+            expressions = {
+                {
+                    operator = "contain",
+                    field = "msg",
+                    value = "厚皮",
+                },
+            },
+            class = "收皮/{author}"
+        },
+        {
+            expressions = {
+                {
+                    operator = "contain",
+                    field = "msg",
+                    value = "黑上",
+                },
+            },
+            class = "副本/黑上/{author}"
+        },
     }
 }
 
@@ -77,6 +132,8 @@ function MessageClassifierConfigFrame:loadConfig()
             MessageClassifierConfig[key] = val
         end
     end
+
+    MessageClassifierConfig.classificationRules = defaultConfig.classificationRules
 end
 
 MessageClassifierConfigFrame:SetScript("OnEvent", function(self, event, arg1)

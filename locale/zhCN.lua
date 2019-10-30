@@ -2,6 +2,13 @@ local L = LibStub("AceLocale-3.0"):NewLocale(..., "zhCN")
 if not L then return end
 
 L = L or {}
+-- Browser
+L["BROWSER_CLASSIFIED_BY_AUTHOR"] = "玩家列表/%s"
+L["BROWSER_CLASSIFIED_BY_CHANNEL"] = "频道列表/%s"
+L["BROWSER_CLASSIFIED_BY_TIME"] = "时间逆序"
+L["BROWSER_STATUS_BAR"] = "共 %d 消息, 唯一 %d, 重复 %d, 重复率 %0.2f%%"
+L["BROWSER_TITLE"] = "消息浏览器"
+
 -- MessageClassifier
 L["DISABLE_TIPS"] = "公共频道/世界频道消息去重：已停用"
 L["ENABLE_TIPS"] = "公共频道/世界频道消息去重：已启用，可用 /msgdd 命令进行开关。"

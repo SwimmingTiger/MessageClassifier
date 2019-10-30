@@ -4,13 +4,17 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 MessageClassifierBrowser = AceGUI:Create("Frame")
 MessageClassifierBrowser.messages = {}
-MessageClassifierBrowser.messageClass = {}
+MessageClassifierBrowser.messageTree = {}
 MessageClassifierBrowser.messageTreeIndex = {}
 MessageClassifierBrowser.messageViewIndex = {}
 MessageClassifierBrowser.allMessages = 0
 MessageClassifierBrowser.uniqueMessages = 0
 MessageClassifierBrowser.duplicateMessages = 0
 MessageClassifierBrowser.sortViewQueue = {}
+MessageClassifierBrowser.msgViewContent = {}
+MessageClassifierBrowser.baseTime = time() - GetTime()
+MessageClassifierBrowser.updateInterval = 1
+MessageClassifierBrowser.pauseUpdate = false
 
 local function deepCompare(t1,t2,ignore_mt)
     local ty1 = type(t1)
@@ -58,25 +62,56 @@ local function split(str, d)
 	return lst
 end
 
+local function urlEncode(s)
+    s = string.gsub(s, "([^%w%.%- ])", function(c) return string.format("%%%02X", string.byte(c)) end)
+    s = string.gsub(s, " ", "+")
+    return s
+end
+
+local function urlDecode(s)
+   s = string.gsub(s, '%%(%x%x)', function(h) return string.char(tonumber(h, 16)) end)
+   return s
+end
+
+local function dirname(str)
+	if str:match("/") then
+		local name = string.gsub(str, "^(.*)/([^/]*)$", "%1")
+		return name
+	else
+		return ''
+	end
+end
+
+local function formatMsg(msg)
+    return string.format("%s [%s] %s", date("%H:%M:%S", msg.updateTime), msg.author, msg.msg)
+end
+
 local function msgComp(a, b)
-    return  a.updateTime > b.updateTime
+    return a.updateTime > b.updateTime
 end
 
 local lastSortTime = GetTime()
 local function sortAndRefreshViews()
     local now = GetTime()
-    if now - lastSortTime < 5 then return end
+    if now - lastSortTime < MessageClassifierBrowser.updateInterval then return end
+    lastSortTime = now
+
+    -- Prevent stuttering when the user clicks on a node of the tree
+    if MessageClassifierBrowser.pauseUpdate then
+        MessageClassifierBrowser.pauseUpdate = false
+    end
 
     if tableLen(MessageClassifierBrowser.sortViewQueue) > 0 then
         for _,v in pairs(MessageClassifierBrowser.sortViewQueue) do
             table.sort(v, msgComp)
+            if v == MessageClassifierBrowser.msgViewContent.children then
+                MessageClassifierBrowser:updateMsgView()
+            end
         end
         MessageClassifierBrowser.sortViewQueue = {}
-        MessageClassifierBrowser.classTree:RefreshTree()
+        MessageClassifierBrowser.msgTreeView:RefreshTree()
     end
     MessageClassifierBrowser:updateStatusBar()
-
-    lastSortTime = now
 end
 local updateFrame = CreateFrame("Frame")
 updateFrame:SetScript("OnUpdate", sortAndRefreshViews)
@@ -91,7 +126,7 @@ function MessageClassifierBrowser:sortMessageView(view)
     end
 end
 
-function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelName, playerGUID, guid)
+function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelName, authorGUID, guid)
     if authorWithServer == author .. '-' .. GetRealmName() then
         -- Same as the player's realm, remove the suffix
         authorWithServer = author
@@ -101,15 +136,16 @@ function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, chan
         self.messages[guid] = {
             guid = guid,
             author = authorWithServer,
+            authorGUID = authorGUID,
             msg = msg,
             channel = channelName,
-            updateTime = time(),
+            updateTime = GetTime() + self.baseTime,
             count = 1,
         }
         self.uniqueMessages = self.uniqueMessages + 1
-        self:updateMessageClass(guid)
+        self:updateMessageTree(guid)
     else
-        self.messages[guid].updateTime = time()
+        self.messages[guid].updateTime = GetTime() + self.baseTime
         self.messages[guid].count = self.messages[guid].count + 1
         self.duplicateMessages = self.duplicateMessages + 1
 
@@ -120,16 +156,16 @@ function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, chan
     end
 end
 
-function MessageClassifierBrowser:updateMessageClass(guid)
+function MessageClassifierBrowser:updateMessageTree(guid)
     if not self.messages[guid] then return end
     
     local msg = self.messages[guid]
     msg.class = self:getMessageClass(msg, MessageClassifierConfig.classificationRules)
-    self:addMessageToClass(msg, msg.class, self.messageClass)
-    self.classTree:SetTree(self.messageClass)
+    self:addMessageToTree(msg, msg.class, self.messageTree)
+    self.msgTreeView:SetTree(self.messageTree)
 end
 
-function MessageClassifierBrowser:addMessageToClass(msg, classPath, messageTree)
+function MessageClassifierBrowser:addMessageToTree(msg, classPath, messageTree)
     for k in pairs(classPath) do
         local parts = split(k, '/')
         local path = nil
@@ -159,7 +195,7 @@ function MessageClassifierBrowser:addMessageToClass(msg, classPath, messageTree)
             local parent = parentNode.children
             local index = #(parent) + 1
             parent[index] = {
-                text = msg.msg,
+                text = formatMsg(msg),
                 value = msg.guid,
                 parent = parentNode,
                 msg = msg,
@@ -168,7 +204,7 @@ function MessageClassifierBrowser:addMessageToClass(msg, classPath, messageTree)
             if not self.messageViewIndex[msg.guid] then
                 self.messageViewIndex[msg.guid] = {}
             end
-            self.messageViewIndex[msg.guid][#self.messageViewIndex[msg.guid]] = parent[index]
+            self.messageViewIndex[msg.guid][#self.messageViewIndex[msg.guid] + 1] = parent[index]
             self:sortMessageView(parent[index])
         end
     end
@@ -232,12 +268,12 @@ function MessageClassifierBrowser:getMessageClass(msg, ruleSet)
     return classPath
 end
 
-function MessageClassifierBrowser:updateAllMessageClass()
-    self.messageClass = {}
+function MessageClassifierBrowser:updateAllMessages()
+    self.messageTree = {}
     self.messageTreeIndex = {}
     self.messageViewIndex = {}
     for guid in pairs(self.messages) do
-        self:updateMessageClass(guid)
+        self:updateMessageTree(guid)
     end
 end
 
@@ -249,27 +285,100 @@ function MessageClassifierBrowser:updateStatusBar()
     ))
 end
 
-MessageClassifierBrowser:SetTitle(L["BROWSER_TITLE"])
-MessageClassifierBrowser:updateStatusBar()
-MessageClassifierBrowser:SetLayout("Flow")
+function MessageClassifierBrowser:updateMsgView()
+    local function getAllMessages(tree, result)
+        for i=1, #tree do
+            local item = tree[i]
+            if item.msg then
+                result[#result + 1] = item
+            end
+            if item.children then
+                getAllMessages(item.children, result)
+            end
+        end
+    end
+    local allMessages = {}
+    getAllMessages(self.msgViewContent.children, allMessages)
+    table.sort(allMessages, msgComp)
 
-MessageClassifierBrowser.searchEdit = AceGUI:Create("EditBox")
-MessageClassifierBrowser.searchEdit:SetRelativeWidth(1)
-MessageClassifierBrowser:AddChild(MessageClassifierBrowser.searchEdit)
+    self.msgView:Clear()
+    self.msgView.msgSize = #allMessages
+    self.msgView:SetMaxLines(self.msgView.msgSize)
+    for i=self.msgView.msgSize, 1, -1 do
+        local msg = allMessages[i].msg
+        self.msgView:AddMessage(formatMsg(msg))
+    end
+    self.msgView.msgSizeLineSpacing = self.msgView:CalculateLineSpacing()
+    self.msgScroll:updateScroll()
+end
 
-MessageClassifierBrowser.classTree = AceGUI:Create("TreeGroup")
-MessageClassifierBrowser.classTree:SetFullWidth(true)
-MessageClassifierBrowser.classTree:SetFullHeight(true)
-MessageClassifierBrowser.classTree:SetTree(MessageClassifierBrowser.messageClass)
---MessageClassifierBrowser.classTree.treeframe:SetWidth(600)
-MessageClassifierBrowser.classTree:SetCallback("OnGroupSelected", function(self, event, group)
-    self:SelectByPath(group)
-end)
-MessageClassifierBrowser.classTree:SetLayout("Fill")
-MessageClassifierBrowser:AddChild(MessageClassifierBrowser.classTree)
+function MessageClassifierBrowser:CreateView()
+    self:SetTitle(L["BROWSER_TITLE"])
+    self:updateStatusBar()
+    self:SetLayout("Flow")
 
-MessageClassifierBrowser.messageScrollView = AceGUI:Create("ScrollFrame")
-MessageClassifierBrowser.messageScrollView:SetLayout("List")
-MessageClassifierBrowser.classTree:AddChild(MessageClassifierBrowser.messageScrollView)
+    self.searchEdit = AceGUI:Create("EditBox")
+    self.searchEdit:SetRelativeWidth(1)
+    self:AddChild(self.searchEdit)
 
-MessageClassifierBrowser:Hide()
+    self.msgTreeView = AceGUI:Create("TreeGroup")
+    self.msgTreeView:SetFullWidth(true)
+    self.msgTreeView:SetFullHeight(true)
+    self.msgTreeView:SetTree(self.messageTree)
+    self.msgTreeView.parent = self
+    self.msgTreeView:SetCallback("OnGroupSelected", function(self, event, group)
+        local parent = self.parent
+        -- Prevent stuttering when the user clicks on a node of the tree
+        parent.pauseUpdate = true
+
+        local path = group:gsub(string.char(1), '/')
+        while path ~= '' and not parent.messageTreeIndex[path] do
+            path = dirname(path)
+        end
+        if parent.messageTreeIndex[path] then
+            parent.msgViewContent = parent.messageTreeIndex[path]
+        end
+        parent:updateMsgView()
+    end)
+    self.msgTreeView:SetLayout("Fill")
+    self:AddChild(self.msgTreeView)
+
+    self.msgView = CreateFrame("ScrollingMessageFrame", "$parentMessages", self.msgTreeView.content)
+    self.msgView:SetInsertMode(SCROLLING_MESSAGE_FRAME_INSERT_MODE_TOP)
+    self.msgView:SetFading(false)
+    self.msgView:SetIndentedWordWrap(true)
+    self.msgView:SetFontObject(ChatFontNormal)
+    self.msgView:SetPoint("TOPLEFT", 0, 0)
+    self.msgView:SetPoint("BOTTOMRIGHT", -20, 0)
+    self.msgView:SetJustifyH("LEFT")
+    self.msgScroll = CreateFrame("ScrollFrame", "$parentScroll", self.msgTreeView.content, "FauxScrollFrameTemplate")
+    self.msgScroll:SetPoint("TOPLEFT", 0, 0)
+    self.msgScroll:SetPoint("BOTTOMRIGHT", -20, 0)
+
+    self.msgView.msgSize = 0
+    self.msgView.msgSizeLineSpacing = 14
+    self.msgView:SetMaxLines(self.msgView.msgSize)
+
+    self.msgScroll.msgView = self.msgView
+    self.msgView.msgScroll = self.msgScroll
+    function self.msgScroll:updateScroll()
+        local lines = self.msgView.msgSize
+        if lines == 0 then
+            lines = 1
+        end
+        local offset = FauxScrollFrame_GetOffset(self)
+        self.msgView:SetScrollOffset(offset)
+        FauxScrollFrame_Update(self, lines, 1, self.msgView.msgSizeLineSpacing)
+    end
+    self.msgScroll:SetScript("OnVerticalScroll", function(self, offset)
+        FauxScrollFrame_OnVerticalScroll(self, offset, self.msgView.msgSizeLineSpacing, self.updateScroll)
+    end)
+    self:Hide()
+
+    SLASH_MSGCF1 = "/msgcf"
+    SlashCmdList["MSGCF"] = function(...)
+        MessageClassifierBrowser:Show()
+    end
+end
+
+MessageClassifierBrowser:CreateView()
