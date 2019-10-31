@@ -99,15 +99,41 @@ local function getColoredCount(count)
     if count < 5 then
         color = "00cd00"
     elseif count < 10 then
-        color = "ffa500"
+        color = "e68e32"
     else
         color = "ff3030"
     end
 	return string.format("|cff%s(%sx)|r ", color, count)
 end
 
+local CHANNEL_NAME_REPLACE = {
+    [L["CHAN_FULLNAME_GUILD"]] = L["CHAN_SHORTNAME_GUILD"],
+    [L["CHAN_FULLNAME_RAID"]] = L["CHAN_SHORTNAME_RAID"],
+    [L["CHAN_FULLNAME_PARTY"]] = L["CHAN_SHORTNAME_PARTY"],
+    [L["CHAN_FULLNAME_YELL"]] = L["CHAN_SHORTNAME_YELL"],
+    [L["CHAN_FULLNAME_BATTLEGROUND"]] = L["CHAN_SHORTNAME_BATTLEGROUND"],
+    [L["CHAN_FULLNAME_GENERAL"]] = L["CHAN_SHORTNAME_GENERAL"],
+    [L["CHAN_FULLNAME_TRADE"]] = L["CHAN_SHORTNAME_TRADE"],
+    [L["CHAN_FULLNAME_WORLDDEFENSE"]] = L["CHAN_SHORTNAME_WORLDDEFENSE"],
+    [L["CHAN_FULLNAME_LOCALDEFENSE"]] = L["CHAN_SHORTNAME_LOCALDEFENSE"],
+    [L["CHAN_FULLNAME_LFGCHANNEL"]] = L["CHAN_SHORTNAME_LFGCHANNEL"],
+    [L["CHAN_FULLNAME_BIGFOOTCHANNEL"]] = L["CHAN_SHORTNAME_BIGFOOT"],
+    [L["CHAN_FULLNAME_WHISPERTO"]] = L["CHAN_SHORTNAME_WHISPERTO"],
+    [L["CHAN_FULLNAME_WHISPERFROM"]] = L["CHAN_SHORTNAME_WHISPERFROM"]
+}
+
+local function shortChannelName(channel)
+    if CHANNEL_NAME_REPLACE[channel] then
+        return CHANNEL_NAME_REPLACE[channel]
+    end
+    for k,v in pairs(CHANNEL_NAME_REPLACE) do
+        channel = channel:gsub(k, v)
+    end
+    return channel
+end
+
 local function formatMsg(msg)
-    local text = string.format("|cffffc0c0%s [|r%s|cffffc0c0]|r %s", date("%H:%M:%S", msg.updateTime), msg.author, msg.msg)
+    local text = string.format("|cffffa900%s|r |Hchannel:channel:%d|h[%s]|h [|Hplayer:%s:-1|h%s|h] %s", date("%H:%M:%S", msg.updateTime), msg.channelID, shortChannelName(msg.channel), msg.authorWithServer, msg.author, msg.msg)
     if msg.count > 1 then
         text = getColoredCount(msg.count)..text
     end
@@ -165,7 +191,7 @@ function MessageClassifierBrowser:sortMessageView(view)
     end
 end
 
-function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelName, authorGUID, guid, guidInt)
+function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelID, channelName, authorGUID, guid, guidInt)
     self.allMessages = self.allMessages + 1
     if not self.messages[guid] then
         if authorWithServer ~= author .. '-' .. GetRealmName() then
@@ -180,6 +206,7 @@ function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, chan
             authorWithServer = authorWithServer,
             msg = msg,
             channel = channelName,
+            channelID = channelID,
             updateTime = updateTime,
             count = 1,
         }
@@ -351,7 +378,7 @@ function MessageClassifierBrowser:updateMsgView()
     self.msgView:SetMaxLines(self.msgView.msgSize)
     for i=1, self.msgView.msgSize do
         local msg = allMessages[i].msg
-        self.msgView:AddMessage(formatMsg(msg))
+        self.msgView:AddMessage(formatMsg(msg), 0xff / 255, 0xc0 / 255, 0xc0 / 255)
     end
     self.msgView.msgSizeLineSpacing = self.msgView:CalculateLineSpacing()
     self.msgScroll:updateScroll()
@@ -400,18 +427,25 @@ function MessageClassifierBrowser:CreateView()
     self.msgView:SetPoint("TOPLEFT", 0, 0)
     self.msgView:SetPoint("BOTTOMRIGHT", -20, 0)
     self.msgView:SetJustifyH("LEFT")
+
+    self.msgView.showItemTooltip = false
     function self.msgView:showHyperlink(link)
-        print(link)
-        GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-        GameTooltip:SetHyperlink(link)
-        GameTooltip:Show()
+        local t = link:match("^(.-):")
+        if t == "item" or t == "enchant" or t == "spell" or t == "quest" then
+            GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+            GameTooltip:SetHyperlink(link)
+            GameTooltip:Show()
+            self.showItemTooltip = true
+        end
     end
     function self.msgView:hideHyperlink(link)
-        print(link)
-        GameTooltip:ClearLines()
-		GameTooltip:Hide()
+        if self.showItemTooltip then
+            GameTooltip:ClearLines()
+            GameTooltip:Hide()
+            self.showItemTooltip = false
+        end
     end
-    self.msgView:SetScript("OnHyperlinkClick", self.msgView.showHyperlink)
+    self.msgView:SetScript("OnHyperlinkClick", ChatFrame_OnHyperlinkShow)
     self.msgView:SetScript("OnHyperlinkEnter", self.msgView.showHyperlink)
     self.msgView:SetScript("OnHyperlinkLeave", self.msgView.hideHyperlink)
 
