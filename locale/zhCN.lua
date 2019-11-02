@@ -22,6 +22,30 @@ L["OPTION_ENABLED_TOOLTIP"] = "不显示公共频道/世界频道中重复的消
 L["OPTION_MIN_DUP_INTERVAL"] = "允许重复消息出现的最短间隔秒数，设为0始终禁止重复消息"
 L["OPTION_RESET"] = "重置过滤器"
 L["OPTION_RESET_TOOLTIP"] = "清除重复消息记录，允许重复消息再次显示"
+L["OPTION_OPEN_MESSAGE_BROWSER"] = "打开消息浏览器"
+L["OPTION_RULE_SETS_TITLE"] = "消息分类规则"
+L["OPTION_ADD_RULE_SET"] = "添加规则"
+L["OPTION_EDIT_RULE_SET"] = "编辑"
+L["OPTION_REMOVE_RULE_SET"] = "移除"
+L["OPTION_RULE_SETS"] = "自定义规则"
+L["OPTION_DEFAULT_RULE_SETS"] = "默认规则"
+L["OPTION_RULE_LOGIC"] = "达成条件"
+L["OPTION_RULE_LOGIC_OR"] = "任一"
+L["OPTION_RULE_LOGIC_AND"] = "全部"
+
+-- Localized class variable
+L["author"] = "作者"
+L["channel"] = "频道"
+L["content"] = "内容"
+
+-- Rule Operators
+L["unconditional"] = "无条件"
+L["equal"] = "等于"
+L["not equal"] = "不等于"
+L["contain"] = "包含"
+L["not contain"] = "不包含"
+L["match"] = "匹配"
+L["not match"] = "不匹配"
 
 -- Channels
 L["CHAN_FULLNAME_GUILD"]="公会"

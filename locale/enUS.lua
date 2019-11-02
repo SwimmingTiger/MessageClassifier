@@ -22,6 +22,30 @@ L["OPTION_ENABLED_TOOLTIP"] = "Do not display duplicate messages in public chann
 L["OPTION_MIN_DUP_INTERVAL"] = "Min seconds for duplicate messages appear, 0 to always hide"
 L["OPTION_RESET"] = "Reset filter"
 L["OPTION_RESET_TOOLTIP"] = "Clear duplicate message records, allowing duplicate messages to be displayed again"
+L["OPTION_OPEN_MESSAGE_BROWSER"] = "Message Browser"
+L["OPTION_RULE_SETS_TITLE"] = "Classification Rules"
+L["OPTION_ADD_RULE_SET"] = "Add Rules"
+L["OPTION_EDIT_RULE_SET"] = "Edit"
+L["OPTION_REMOVE_RULE_SET"] = "Remove"
+L["OPTION_RULE_SETS"] = "Custom Rules"
+L["OPTION_DEFAULT_RULE_SETS"] = "Default Rules"
+L["OPTION_RULE_LOGIC"] = "Achieve conditions"
+L["OPTION_RULE_LOGIC_OR"] = "Any"
+L["OPTION_RULE_LOGIC_AND"] = "All"
+
+-- Rule Fields
+L["author"] = true
+L["channel"] = true
+L["content"] = true
+
+-- Rule Operators
+L["unconditional"] = true
+L["equal"] = true
+L["not equal"] = true
+L["contain"] = true
+L["not contain"] = true
+L["match"] = true
+L["not match"] = true
 
 -- Channels
 L["CHAN_FULLNAME_Guild"] = true

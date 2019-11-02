@@ -133,7 +133,7 @@ local function shortChannelName(channel)
 end
 
 local function formatMsg(msg)
-    local text = string.format("|cffffa900%s|r |Hchannel:channel:%d|h[%s]|h [|Hplayer:%s:-1|h%s|h] %s", date("%H:%M:%S", msg.updateTime), msg.channelID, shortChannelName(msg.channel), msg.authorWithServer, msg.author, msg.msg)
+    local text = string.format("|cffffa900%s|r |Hchannel:channel:%d|h[%s]|h [|Hplayer:%s:-1|h%s|h] %s", date("%H:%M:%S", msg.updateTime), msg.channelID, shortChannelName(msg.channel), msg.authorWithServer, msg.author, msg.content)
     if msg.count > 1 then
         text = getColoredCount(msg.count)..text
     end
@@ -141,7 +141,7 @@ local function formatMsg(msg)
 end
 
 local function formatMsgAsTitle(msg, path)
-    local text = msg.msg
+    local text = msg.content
     if not path:find(msg.author) then
         text = string.format("|cffffc0c0[|r%s|cffffc0c0]|r %s", msg.author, text)
     end
@@ -191,7 +191,7 @@ function MessageClassifierBrowser:sortMessageView(view)
     end
 end
 
-function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, channelID, channelName, authorGUID, guid, guidInt)
+function MessageClassifierBrowser:addMessage(content, authorWithServer, author, channelID, channelName, authorGUID, guid, guidInt)
     self.allMessages = self.allMessages + 1
     if not self.messages[guid] then
         if authorWithServer ~= author .. '-' .. GetRealmName() then
@@ -204,7 +204,7 @@ function MessageClassifierBrowser:addMessage(msg, authorWithServer, author, chan
             authorGUID = authorGUID,
             author = getColoredName(author, authorGUID),
             authorWithServer = authorWithServer,
-            msg = msg,
+            content = content,
             channel = channelName,
             channelID = channelID,
             updateTime = updateTime,
@@ -232,6 +232,7 @@ function MessageClassifierBrowser:updateMessageTree(guid)
     
     local msg = self.messages[guid]
     msg.class = self:getMessageClass(msg, MessageClassifierConfig.classificationRules)
+    msg.class = self:getMessageClass(msg, MessageClassifierDefaultRules)
     self:addMessageToTree(msg, msg.class, self.messageTree)
     self.msgTreeView:SetTree(self.messageTree)
 end
@@ -286,43 +287,7 @@ function MessageClassifierBrowser:getMessageClass(msg, ruleSet)
     local classPath = {}
 
     for _, rule in pairs(ruleSet) do
-        local match = false
-        for _, expression in pairs(rule.expressions) do
-            if expression.operator == "unconditional" then
-                match = true
-            else
-                local operator = expression.operator
-                local field = msg[expression.field or ""] or ""
-                local value = expression.value or ""
-
-                if not expression.caseSensitive then
-                    field = field:lower()
-                    if operator ~= "match" and operator ~= "not match" then
-                        value = value:lower()
-                    end
-                end
-
-                if operator == "equal" then
-                    match = field == value
-                elseif operator == "not equal" then
-                    match = field ~= value
-                elseif operator == "contain" then
-                    match = field:find(value) ~= nil
-                elseif operator == "not contain" then
-                    match = field:find(value) == nil
-                elseif operator == "match" then
-                    match = field:match(value)
-                elseif operator == "not match" then
-                    match = not field:match(value)
-                end
-
-                if not match then
-                    break
-                end
-            end
-        end
-
-        if match then
+        if self:ruleMatch(msg, rule) then
             local class = rule.class
 
             if class:find('{author}') ~= nil then
@@ -338,6 +303,60 @@ function MessageClassifierBrowser:getMessageClass(msg, ruleSet)
     end
 
     return classPath
+end
+
+function MessageClassifierBrowser:ruleMatch(msg, rule)
+    if rule.enabled ~= nil and not rule.enabled then
+        return false
+    end
+
+    if rule.id and MessageClassifierConfig.enabledDefaultRules[rule.id] ~= nil and not MessageClassifierConfig.enabledDefaultRules[rule.id] then
+        return false
+    end
+
+    local logicOr = rule.logic ~= "and"
+    local match = false
+    for _, expression in ipairs(rule.expressions) do
+        if expression.operator == "unconditional" then
+            return true
+        end
+        
+        local operator = expression.operator
+        local field = msg[expression.field or ""] or ""
+        local value = expression.value or ""
+
+        if not expression.caseSensitive then
+            field = field:lower()
+            if operator ~= "match" and operator ~= "not match" then
+                value = value:lower()
+            end
+        end
+
+        if operator == "equal" then
+            match = field == value
+        elseif operator == "not equal" then
+            match = field ~= value
+        elseif operator == "contain" then
+            match = field:find(value) ~= nil
+        elseif operator == "not contain" then
+            match = field:find(value) == nil
+        elseif operator == "match" then
+            match = field:match(value) ~= nil
+        elseif operator == "not match" then
+            match = field:match(value) == nil
+        end
+
+        if logicOr then
+            if match then
+                return true
+            end
+        else
+            if not match then
+                return false
+            end
+        end
+    end
+    return match
 end
 
 function MessageClassifierBrowser:updateAllMessages()
