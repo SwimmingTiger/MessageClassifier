@@ -316,7 +316,7 @@ function MessageClassifierBrowser:ruleMatch(msg, rule)
 
     local logicOr = rule.logic ~= "and"
     local match = false
-    for _, expression in ipairs(rule.expressions) do
+    for _, expression in ipairs(rule.conditions) do
         if expression.operator == "unconditional" then
             match = true
             break

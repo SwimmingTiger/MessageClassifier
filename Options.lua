@@ -12,8 +12,6 @@ local defaultConfig = {
     ["enabledDefaultRules"] = {},
 }
 
-MessageClassifierConfigFrame = CreateFrame("Frame", "MessageClassifierConfigFrame", UIParent)
-
 MessageClassifierDefaultRules = {
     --[[
     -- Fields and values:
@@ -21,7 +19,7 @@ MessageClassifierDefaultRules = {
         logic = "and"
                 "or"
                 Default: "or"
-        expressions = {
+        conditions = {
             field: "author",
                    "channel"
                    "content"
@@ -67,28 +65,28 @@ MessageClassifierDefaultRules = {
     }]]
     {
         id = 1,
-        expressions = {
+        conditions = {
             { operator = "unconditional" },
         },
         class = L["BROWSER_CLASSIFIED_BY_AUTHOR"]:format("{author}")
     },
     {
         id = 2,
-        expressions = {
+        conditions = {
             { operator = "unconditional" },
         },
         class = L["BROWSER_CLASSIFIED_BY_CHANNEL"]:format("{channel}")
     },
     {
         id = 3,
-        expressions = {
+        conditions = {
             { operator = "unconditional" },
         },
         class = L["BROWSER_CLASSIFIED_ALL_MESSAGES"]
     },
     {
         id = 4,
-        expressions = {
+        conditions = {
             {
                 operator = "contain",
                 field = "content",
@@ -99,7 +97,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 5,
-        expressions = {
+        conditions = {
             {
                 operator = "contain",
                 field = "content",
@@ -115,7 +113,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 7,
-        expressions = {
+        conditions = {
             {
                 operator = "contain",
                 field = "content",
@@ -126,7 +124,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 8,
-        expressions = {
+        conditions = {
             {
                 operator = "contain",
                 field = "content",
@@ -138,7 +136,7 @@ MessageClassifierDefaultRules = {
     {
         id = 9,
         logic = "and",
-        expressions = {
+        conditions = {
             {
                 operator = "contain",
                 field = "content",
@@ -183,21 +181,42 @@ end
 
 local function ruleToText(ruleSet)
     local text = string.format("%s: %s", L["OPTION_CLASS"], localizeClassPathWithColor(ruleSet.class))
-    if #ruleSet.expressions > 1 then
+    if #ruleSet.conditions > 1 then
         local logicOr = ruleSet.logic ~= "and"
-        text = text..string.format("\n%s (|cffc586c0%s|r):", L["OPTION_ACHIEVE_CONDITIONS"], logicOr and L["OPTION_RULE_LOGIC_OR"] or L["OPTION_RULE_LOGIC_AND"])
+        text = text..string.format("\n%s (|cffc586c0%s|r):", L["OPTION_CONDITIONS"], logicOr and L["OPTION_RULE_LOGIC_OR"] or L["OPTION_RULE_LOGIC_AND"])
     else
-        text = text..string.format("\n%s:", L["OPTION_ACHIEVE_CONDITIONS"])
+        text = text..string.format("\n%s:", L["OPTION_CONDITIONS"])
     end
-    for _, rule in ipairs(ruleSet.expressions) do
+    for _, rule in ipairs(ruleSet.conditions) do
         if rule.operator == "unconditional" then
             text = text..string.format("\n|cff569cd6%s|r", L["unconditional"])
             break
         end
         text = text..string.format("\n|cffdcdcaa%s|r |cff569cd6%s|r |cffce9178%s|r", L[rule.field], L[rule.operator], rule.value)
+        if rule.caseSensitive then
+            text = text..string.format(" (%s)", L["OPTION_COND_CASESENSITIVE"])
+        end
     end
     return text
 end
+
+local function deepCopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[deepCopy(orig_key)] = deepCopy(orig_value)
+        end
+        setmetatable(copy, deepCopy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+MessageClassifierConfigFrame = CreateFrame("Frame", "MessageClassifierConfigFrame", UIParent)
+MessageClassifierConfigFrame.ruleEditCache = {}
 
 function MessageClassifierConfigFrame:loadConfig()
     if not MessageClassifierConfig then MessageClassifierConfig = {} end
@@ -273,7 +292,7 @@ function MessageClassifierConfigFrame:loadConfig()
                     addRuleSet = {
                         order = 999999, -- at the end
                         type = "execute",
-                        name = L["OPTION_ADD_RULE_SET"],
+                        name = L["OPTION_ADD"],
                         func = function(info)
                             MessageClassifierConfigFrame:addRuleSet()
                         end
@@ -290,14 +309,12 @@ function MessageClassifierConfigFrame:loadConfig()
         }
     }
 
-    self.ruleSetsIndex = 0
-
     for k,v in pairs(MessageClassifierConfig.classificationRules) do
-        self:addRuleSetToView(self.configTable.args.ruleSets, k, v)
+        self:addRuleSetToView(k, v)
     end
 
     for k,v in pairs(MessageClassifierDefaultRules) do
-        self:addDefaultRuleSetToView(self.configTable.args.defaultRuleSets, k, v)
+        self:addDefaultRuleSetToView(k, v)
     end
 
 
@@ -311,12 +328,12 @@ function MessageClassifierConfigFrame:resetRules()
 
     self.configTable.args.ruleSets.args = {}
     for k,v in pairs(MessageClassifierConfig.classificationRules) do
-        self:addRuleSetToView(self.configTable.args.ruleSets, k, v)
+        self:addRuleSetToView(k, v)
     end
 
     self.configTable.args.defaultRuleSets.args = {}
     for k,v in pairs(MessageClassifierDefaultRules) do
-        self:addDefaultRuleSetToView(self.configTable.args.defaultRuleSets, k, v)
+        self:addDefaultRuleSetToView(k, v)
     end
     
     MessageClassifierBrowser:updateAllMessages()
@@ -326,17 +343,18 @@ end
 function MessageClassifierConfigFrame:addRuleSet()
     local index = #MessageClassifierConfig.classificationRules + 1
     MessageClassifierConfig.classificationRules[index] = {
-        expressions = {
+        conditions = {
             {
                 operator = "contain",
                 field = "content",
                 value = "xxx",
             },
         },
-        class = "xxx/{author}"
+        class = "xxx/{author}",
+        tmp = true,
+        enabled = false,
     }
-    self:addRuleSetToView(self.configTable.args.ruleSets, index, MessageClassifierConfig.classificationRules[index])
-    MessageClassifierBrowser:updateAllMessages()
+    self:editRuleSet(index)
     --AceConfigRegistry:NotifyChange(ADDON_NAME)
 end
 
@@ -348,14 +366,14 @@ function MessageClassifierConfigFrame:removeRuleSet(index)
         addRuleSet = addRuleSet,
     }
     for k,v in pairs(MessageClassifierConfig.classificationRules) do
-        self:addRuleSetToView(self.configTable.args.ruleSets, k, v)
+        self:addRuleSetToView(k, v)
     end
     MessageClassifierBrowser:updateAllMessages()
     --AceConfigRegistry:NotifyChange(ADDON_NAME)
 end
 
-function MessageClassifierConfigFrame:addRuleSetToView(group, index, ruleSet)
-    self.ruleSetsIndex = self.ruleSetsIndex + 1
+function MessageClassifierConfigFrame:addRuleSetToView(index, ruleSet)
+    local group = self.configTable.args.ruleSets
     local option = {
         type = "group",
         inline = true,
@@ -379,6 +397,7 @@ function MessageClassifierConfigFrame:addRuleSetToView(group, index, ruleSet)
                 order = 2,
                 type = "toggle",
                 name = L["OPTION_HIDE_FROM_CHAT_WINDOW"],
+                width = 1.5,
                 get = function(info)
                     return ruleSet.hideFromChatWindow == true
                 end,
@@ -390,15 +409,16 @@ function MessageClassifierConfigFrame:addRuleSetToView(group, index, ruleSet)
             editRuleSet = {
                 order = 3,
                 type = "execute",
-                name = L["OPTION_EDIT_RULE_SET"],
+                name = L["OPTION_EDIT"],
                 width = 0.5,
                 func = function(info)
+                    MessageClassifierConfigFrame:editRuleSet(index)
                 end
             },
             removeRuleSet = {
                 order = 4,
                 type = "execute",
-                name = L["OPTION_REMOVE_RULE_SET"],
+                name = L["OPTION_REMOVE"],
                 width = 0.5,
                 func = function(info)
                     MessageClassifierConfigFrame:removeRuleSet(index)
@@ -408,18 +428,285 @@ function MessageClassifierConfigFrame:addRuleSetToView(group, index, ruleSet)
                 order = 11,
                 type = "description",
                 name = ruleToText(ruleSet),
+                width = "full",
             },
         }
     }
-    group.args[tostring(self.ruleSetsIndex)] = option
+    group.args[tostring(index)] = option
 end
 
-function MessageClassifierConfigFrame:addDefaultRuleSetToView(group, order, ruleSet)
-    self.ruleSetsIndex = self.ruleSetsIndex + 1
+function MessageClassifierConfigFrame:editRuleSet(index)
+    local group = self.configTable.args.ruleSets
+    local ruleSet = MessageClassifierConfig.classificationRules[index]
+
+    if self.ruleEditCache[index] == nil then
+        self.ruleEditCache[index] = deepCopy(ruleSet)
+    end
+
+    local cache = self.ruleEditCache[index]
+    if cache.tmp then
+        cache.enabled = nil
+    end
+
     local option = {
         type = "group",
         inline = true,
-        order = order,
+        order = index,
+        name = "",
+        args = {
+            enabled = {
+                order = 1,
+                type = "toggle",
+                name = L["OPTION_ENABLE"],
+                width = 0.5,
+                get = function(info)
+                    return cache.enabled ~= false
+                end,
+                set = function(info, val)
+                    cache.enabled = val
+                    MessageClassifierBrowser:updateAllMessages()
+                end,
+            },
+            hideFromChatWindow = {
+                order = 2,
+                type = "toggle",
+                name = L["OPTION_HIDE_FROM_CHAT_WINDOW"],
+                width = 1.5,
+                get = function(info)
+                    return cache.hideFromChatWindow == true
+                end,
+                set = function(info, val)
+                    cache.hideFromChatWindow = val
+                    MessageClassifierBrowser:updateAllMessages()
+                end,
+            },
+            saveRuleSet = {
+                order = 3,
+                type = "execute",
+                name = L["OPTION_SAVE"],
+                width = 0.5,
+                func = function(info)
+                    MessageClassifierConfigFrame:saveRuleSet(index)
+                end
+            },
+            cancelEditRuleSet = {
+                order = 3,
+                type = "execute",
+                name = L["OPTION_CANCEL"],
+                width = 0.5,
+                func = function(info)
+                    MessageClassifierConfigFrame:cancelEditRuleSet(index)
+                end
+            },
+            class = {
+                order = 11,
+                type = "input",
+                name = L["OPTION_CLASS"],
+                width = "full",
+                get = function(info)
+                    return localizeClassPath(cache.class)
+                end,
+                set = function(info, val)
+                    cache.class = delocalizeClassPath(val)
+                end,
+            },
+            conditions = {
+                order = 21,
+                type = "group",
+                inline = true,
+                name = L["OPTION_CONDITIONS"],
+                args = {
+                    actionBar = {
+                        order = 999999, -- at the end
+                        type = "group",
+                        inline = true,
+                        name = "",
+                        args = {
+                            logic = {
+                                order = 1,
+                                type = "select",
+                                width = 0.7,
+                                name = L["OPTION_CONDITION_LOGIC"],
+                                values = {
+                                    ["or"] = L["OPTION_RULE_LOGIC_OR"],
+                                    ["and"] = L["OPTION_RULE_LOGIC_AND"],
+                                },
+                                get = function(info)
+                                    return cache.logic == "and" and "and" or "or"
+                                end,
+                                set = function(info, val)
+                                    cache.logic = val
+                                end
+                            },
+                            addCondition = {
+                                order = 2,
+                                type = "execute",
+                                name = L["OPTION_ADD"],
+                                width = 0.5,
+                                func = function(info)
+                                    MessageClassifierConfigFrame:addCondition(index)
+                                end
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for conditionIndex, condition in ipairs(cache.conditions) do
+        self:addConditionToView(index, conditionIndex, condition, option.args.conditions)
+    end
+    
+    group.args[tostring(index)] = option
+end
+
+function MessageClassifierConfigFrame:addCondition(ruleSetIndex)
+    local group = self.configTable.args.ruleSets.args[tostring(ruleSetIndex)].args.conditions
+    local conditions = self.ruleEditCache[ruleSetIndex].conditions
+    local index = #conditions + 1
+
+    conditions[index] = {
+        operator = "contain",
+        field = "content",
+        value = "xxx",
+    }
+
+    self:addConditionToView(ruleSetIndex, index, conditions[index], group)
+end
+
+function MessageClassifierConfigFrame:removeCondition(ruleSetIndex, index)
+    local group = self.configTable.args.ruleSets.args[tostring(ruleSetIndex)].args.conditions
+    local conditions = self.ruleEditCache[ruleSetIndex].conditions
+    
+    table.remove(conditions, index)
+
+    local actionBar = group.args.actionBar
+    group.args = {
+        actionBar = actionBar
+    }
+
+    for i, v in ipairs(conditions) do
+        self:addConditionToView(ruleSetIndex, i, v, group)
+    end
+end
+
+function MessageClassifierConfigFrame:addConditionToView(ruleSetIndex, index, condition, group)
+    local option = {
+        type = "group",
+        inline = true,
+        order = index,
+        name = "",
+        args = {
+            actionBar = {
+                order = 1,
+                type = "group",
+                inline = true,
+                name = "",
+                args = {
+                    caseSensitive = {
+                        order = 1,
+                        type = "toggle",
+                        name = L["OPTION_COND_CASESENSITIVE"],
+                        get = function(info)
+                            return condition.caseSensitive == true
+                        end,
+                        set = function(info, val)
+                            condition.caseSensitive = val
+                        end,
+                    },
+                    removeCondition = {
+                        order = 2,
+                        type = "execute",
+                        name = L["OPTION_REMOVE"],
+                        width = 0.5,
+                        func = function(info)
+                            MessageClassifierConfigFrame:removeCondition(ruleSetIndex, index)
+                        end
+                    },
+                }
+            },
+            field = {
+                order = 11,
+                type = "select",
+                width = 0.7,
+                name = L["OPTION_CONDITION_FIELD"],
+                values = {
+                    ["author"] = L["author"],
+                    ["channel"] = L["channel"],
+                    ["content"] = L["content"],
+                },
+                get = function(info)
+                    return condition.field
+                end,
+                set = function(info, val)
+                    condition.field = val
+                end
+            },
+            operator = {
+                order = 12,
+                type = "select",
+                width = 0.8,
+                name = L["OPTION_CONDITION_OPERATOR"],
+                values = {
+                    ["unconditional"] = L["unconditional"],
+                    ["equal"] = L["equal"],
+                    ["not equal"] = L["not equal"],
+                    ["contain"] = L["contain"],
+                    ["not contain"] = L["not contain"],
+                    ["match"] = L["match"],
+                    ["not match"] = L["not match"],
+                },
+                get = function(info)
+                    return condition.operator
+                end,
+                set = function(info, val)
+                    condition.operator = val
+                end
+            },
+            value = {
+                order = 13,
+                type = "input",
+                width = 1.67,
+                name = L["OPTION_CONDITION_VALUE"],
+                get = function(info)
+                    return condition.value
+                end,
+                set = function(info, val)
+                    condition.value = val
+                end
+            },
+        }
+    }
+    group.args[tostring(index)] = option
+end
+
+function MessageClassifierConfigFrame:cancelEditRuleSet(index)
+    local tmp = self.ruleEditCache[index].tmp
+    self.ruleEditCache[index] = nil
+    if tmp then
+       self:removeRuleSet(index) 
+    else
+        self:addRuleSetToView(index, MessageClassifierConfig.classificationRules[index])
+    end
+end
+
+function MessageClassifierConfigFrame:saveRuleSet(index)
+    if self.ruleEditCache[index].tmp then
+        self.ruleEditCache[index].tmp = nil
+    end
+    MessageClassifierConfig.classificationRules[index] = self.ruleEditCache[index]
+    self.ruleEditCache[index] = nil
+    self:addRuleSetToView(index, MessageClassifierConfig.classificationRules[index])
+    MessageClassifierBrowser:updateAllMessages()
+end
+
+function MessageClassifierConfigFrame:addDefaultRuleSetToView(index, ruleSet)
+    local group = self.configTable.args.defaultRuleSets
+    local option = {
+        type = "group",
+        inline = true,
+        order = index,
         name = "",
         args = {
             enabled = {
@@ -439,6 +726,7 @@ function MessageClassifierConfigFrame:addDefaultRuleSetToView(group, order, rule
                 order = 2,
                 type = "toggle",
                 name = L["OPTION_HIDE_FROM_CHAT_WINDOW"],
+                width = 1.5,
                 get = function(info)
                     return ruleSet.hideFromChatWindow == true
                 end,
@@ -454,7 +742,7 @@ function MessageClassifierConfigFrame:addDefaultRuleSetToView(group, order, rule
             },
         }
     }
-    group.args[tostring(self.ruleSetsIndex)] = option
+    group.args[tostring(index)] = option
 end
 
 MessageClassifierConfigFrame:RegisterEvent("ADDON_LOADED")
