@@ -4,9 +4,9 @@
 #@non-retail@
 ## Interface: 11302
 #@end-non-retail@
-## Title: Message Deduplication
-## Title-zhCN: 聊天消息去重
-## Title-zhTW: 聊天消息去重
+## Title: Message Classifier
+## Title-zhCN: 聊天消息分类去重
+## Title-zhTW: 聊天消息分类去重
 ## Notes: MessageClassifier
 ## Version: @project-version@
 ## Author: SwimmingTiger (NGA: hu60)

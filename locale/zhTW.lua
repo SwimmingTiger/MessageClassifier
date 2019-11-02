@@ -11,7 +11,7 @@ L["ENABLE_TIPS_WITH_BIGFOOT"] = "Public channel/World channel message deduplicat
 L["RESET_TIPS"] = "Public channel/World channel message deduplication: Filter has been reset"
 
 -- Options
-L["CONFIG_PAGE_TITLE"] = "聊天消息去重"
+L["CONFIG_PAGE_TITLE"] = "聊天消息分類去重"
 L["OPTION_ENABLED"] = "啓用重複消息過濾"
 L["OPTION_ENABLED_TOOLTIP"] = "不顯示公共頻道/世界頻道中重複的消息"
 L["OPTION_MIN_DUP_INTERVAL"] = "允許重復消息出現的最短間隔秒數，設為0始終禁止重複消息"

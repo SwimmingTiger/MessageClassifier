@@ -18,7 +18,7 @@ L["ENABLE_TIPS_WITH_BIGFOOT"] = "公共频道/世界频道消息去重：已启�
 L["RESET_TIPS"] = "公共频道/世界频道消息去重：过滤器已重置"
 
 -- Options
-L["CONFIG_PAGE_TITLE"] = "聊天消息去重"
+L["CONFIG_PAGE_TITLE"] = "聊天消息分类去重"
 L["OPTION_ENABLED"] = "启用重复消息过滤"
 L["OPTION_ENABLED_TOOLTIP"] = "不显示公共频道/世界频道中重复的消息"
 L["OPTION_MIN_DUP_INTERVAL"] = "允许重复消息出现的最短间隔秒数，设为0始终禁止重复消息"
