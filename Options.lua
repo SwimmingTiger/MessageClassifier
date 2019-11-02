@@ -1,5 +1,7 @@
 local ADDON_NAME = ...
 local L = LibStub("AceLocale-3.0"):GetLocale(ADDON_NAME)
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 MessageClassifierConfig = {}
 
@@ -268,11 +270,12 @@ function MessageClassifierConfigFrame:loadConfig()
                 inline = true,
                 name = L["OPTION_RULE_SETS"],
                 args = {
-                    addRule = {
-                        order = 0,
+                    addRuleSet = {
+                        order = 999999, -- at the end
                         type = "execute",
                         name = L["OPTION_ADD_RULE_SET"],
                         func = function(info)
+                            MessageClassifierConfigFrame:addRuleSet()
                         end
                     },
                 },
@@ -290,38 +293,73 @@ function MessageClassifierConfigFrame:loadConfig()
     self.ruleSetsIndex = 0
 
     for k,v in pairs(MessageClassifierConfig.classificationRules) do
-        self:addRuleSet(self.configTable.args.ruleSets, k, v)
+        self:addRuleSetToView(self.configTable.args.ruleSets, k, v)
     end
 
     for k,v in pairs(MessageClassifierDefaultRules) do
-        self:addDefaultRuleSet(self.configTable.args.defaultRuleSets, k, v)
+        self:addDefaultRuleSetToView(self.configTable.args.defaultRuleSets, k, v)
     end
 
 
-    LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(ADDON_NAME, self.configTable)
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions(ADDON_NAME, L["CONFIG_PAGE_TITLE"])
+    self.registeredOptionsTable = AceConfigRegistry:RegisterOptionsTable(ADDON_NAME, self.configTable)
+    self.blizOptions = AceConfigDialog:AddToBlizOptions(ADDON_NAME, L["CONFIG_PAGE_TITLE"])
 end
 
 function MessageClassifierConfigFrame:resetRules()
     MessageClassifierConfig.classificationRules = {}
+    MessageClassifierConfig.enabledDefaultRules = {}
 
     self.configTable.args.ruleSets.args = {}
     for k,v in pairs(MessageClassifierConfig.classificationRules) do
-        self:addRuleSet(self.configTable.args.ruleSets, k, v)
+        self:addRuleSetToView(self.configTable.args.ruleSets, k, v)
     end
 
     self.configTable.args.defaultRuleSets.args = {}
     for k,v in pairs(MessageClassifierDefaultRules) do
-        self:addDefaultRuleSet(self.configTable.args.defaultRuleSets, k, v)
+        self:addDefaultRuleSetToView(self.configTable.args.defaultRuleSets, k, v)
     end
+    
+    MessageClassifierBrowser:updateAllMessages()
+    --AceConfigRegistry:NotifyChange(ADDON_NAME)
 end
 
-function MessageClassifierConfigFrame:addRuleSet(group, order, ruleSet)
+function MessageClassifierConfigFrame:addRuleSet()
+    local index = #MessageClassifierConfig.classificationRules + 1
+    MessageClassifierConfig.classificationRules[index] = {
+        expressions = {
+            {
+                operator = "contain",
+                field = "content",
+                value = "xxx",
+            },
+        },
+        class = "xxx/{author}"
+    }
+    self:addRuleSetToView(self.configTable.args.ruleSets, index, MessageClassifierConfig.classificationRules[index])
+    MessageClassifierBrowser:updateAllMessages()
+    --AceConfigRegistry:NotifyChange(ADDON_NAME)
+end
+
+function MessageClassifierConfigFrame:removeRuleSet(index)
+    table.remove(MessageClassifierConfig.classificationRules, index)
+
+    local addRuleSet = self.configTable.args.ruleSets.args.addRuleSet
+    self.configTable.args.ruleSets.args = {
+        addRuleSet = addRuleSet,
+    }
+    for k,v in pairs(MessageClassifierConfig.classificationRules) do
+        self:addRuleSetToView(self.configTable.args.ruleSets, k, v)
+    end
+    MessageClassifierBrowser:updateAllMessages()
+    --AceConfigRegistry:NotifyChange(ADDON_NAME)
+end
+
+function MessageClassifierConfigFrame:addRuleSetToView(group, index, ruleSet)
     self.ruleSetsIndex = self.ruleSetsIndex + 1
     local option = {
         type = "group",
         inline = true,
-        order = order,
+        order = index,
         name = "",
         args = {
             enabled = {
@@ -363,6 +401,7 @@ function MessageClassifierConfigFrame:addRuleSet(group, order, ruleSet)
                 name = L["OPTION_REMOVE_RULE_SET"],
                 width = 0.5,
                 func = function(info)
+                    MessageClassifierConfigFrame:removeRuleSet(index)
                 end
             },
             conditions = {
@@ -375,7 +414,7 @@ function MessageClassifierConfigFrame:addRuleSet(group, order, ruleSet)
     group.args[tostring(self.ruleSetsIndex)] = option
 end
 
-function MessageClassifierConfigFrame:addDefaultRuleSet(group, order, ruleSet)
+function MessageClassifierConfigFrame:addDefaultRuleSetToView(group, order, ruleSet)
     self.ruleSetsIndex = self.ruleSetsIndex + 1
     local option = {
         type = "group",
