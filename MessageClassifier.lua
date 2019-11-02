@@ -46,6 +46,9 @@ function MessageClassifier.chatFilter(frame, event, msg, authorWithServer, unkno
     if messageFrameGUIDs[frame][guid] == msgTime then
         return true
     end
+    if MessageClassifierBrowser.hideFromChatWindow[guid] then
+        return true
+    end
     
     messageFrameGUIDs[frame][guid] = msgTime
     return false

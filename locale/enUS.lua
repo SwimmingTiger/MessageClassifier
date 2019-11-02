@@ -29,9 +29,12 @@ L["OPTION_EDIT_RULE_SET"] = "Edit"
 L["OPTION_REMOVE_RULE_SET"] = "Remove"
 L["OPTION_RULE_SETS"] = "Custom Rules"
 L["OPTION_DEFAULT_RULE_SETS"] = "Default Rules"
-L["OPTION_RULE_LOGIC"] = "Achieve conditions"
+L["OPTION_ACHIEVE_CONDITIONS"] = "Achieve conditions"
 L["OPTION_RULE_LOGIC_OR"] = "Any"
 L["OPTION_RULE_LOGIC_AND"] = "All"
+L["OPTION_HIDE_FROM_CHAT_WINDOW"] = "Hide from chat window"
+L["OPTION_ENABLE"] = "Enable"
+L["OPTION_CLASS"] = "Class"
 
 -- Rule Fields
 L["author"] = true

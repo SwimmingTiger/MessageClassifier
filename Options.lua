@@ -180,18 +180,19 @@ local function delocalizeClassPath(class)
 end
 
 local function ruleToText(ruleSet)
-    local text = ""
+    local text = string.format("%s: %s", L["OPTION_CLASS"], localizeClassPathWithColor(ruleSet.class))
     if #ruleSet.expressions > 1 then
         local logicOr = ruleSet.logic ~= "and"
-        text = text..string.format("%s: |cffc586c0%s|r", L["OPTION_RULE_LOGIC"], logicOr and L["OPTION_RULE_LOGIC_OR"] or L["OPTION_RULE_LOGIC_AND"])
+        text = text..string.format("\n%s (|cffc586c0%s|r):", L["OPTION_ACHIEVE_CONDITIONS"], logicOr and L["OPTION_RULE_LOGIC_OR"] or L["OPTION_RULE_LOGIC_AND"])
+    else
+        text = text..string.format("\n%s:", L["OPTION_ACHIEVE_CONDITIONS"])
     end
     for _, rule in ipairs(ruleSet.expressions) do
-        if text ~= "" then text = text.."\n" end
         if rule.operator == "unconditional" then
-            text = text..string.format("|cff569cd6%s|r", L["unconditional"])
+            text = text..string.format("\n|cff569cd6%s|r", L["unconditional"])
             break
         end
-        text = text..string.format("|cffdcdcaa%s|r |cff569cd6%s|r |cffce9178%s|r", L[rule.field], L[rule.operator], rule.value)
+        text = text..string.format("\n|cffdcdcaa%s|r |cff569cd6%s|r |cffce9178%s|r", L[rule.field], L[rule.operator], rule.value)
     end
     return text
 end
@@ -326,8 +327,8 @@ function MessageClassifierConfigFrame:addRuleSet(group, order, ruleSet)
             enabled = {
                 order = 1,
                 type = "toggle",
-                width = 2.3,
-                name = localizeClassPathWithColor(ruleSet.class),
+                name = L["OPTION_ENABLE"],
+                width = 0.5,
                 get = function(info)
                     return ruleSet.enabled ~= false
                 end,
@@ -336,8 +337,20 @@ function MessageClassifierConfigFrame:addRuleSet(group, order, ruleSet)
                     MessageClassifierBrowser:updateAllMessages()
                 end,
             },
-            editRuleSet = {
+            hideFromChatWindow = {
                 order = 2,
+                type = "toggle",
+                name = L["OPTION_HIDE_FROM_CHAT_WINDOW"],
+                get = function(info)
+                    return ruleSet.hideFromChatWindow == true
+                end,
+                set = function(info, val)
+                    ruleSet.hideFromChatWindow = val
+                    MessageClassifierBrowser:updateAllMessages()
+                end,
+            },
+            editRuleSet = {
+                order = 3,
                 type = "execute",
                 name = L["OPTION_EDIT_RULE_SET"],
                 width = 0.5,
@@ -345,7 +358,7 @@ function MessageClassifierConfigFrame:addRuleSet(group, order, ruleSet)
                 end
             },
             removeRuleSet = {
-                order = 3,
+                order = 4,
                 type = "execute",
                 name = L["OPTION_REMOVE_RULE_SET"],
                 width = 0.5,
@@ -373,13 +386,25 @@ function MessageClassifierConfigFrame:addDefaultRuleSet(group, order, ruleSet)
             enabled = {
                 order = 1,
                 type = "toggle",
-                width = 5,
-                name = localizeClassPathWithColor(ruleSet.class),
+                name = L["OPTION_ENABLE"],
+                width = 0.5,
                 get = function(info)
                     return MessageClassifierConfig.enabledDefaultRules[ruleSet.id] ~= false
                 end,
                 set = function(info, val)
                     MessageClassifierConfig.enabledDefaultRules[ruleSet.id] = val
+                    MessageClassifierBrowser:updateAllMessages()
+                end,
+            },
+            hideFromChatWindow = {
+                order = 2,
+                type = "toggle",
+                name = L["OPTION_HIDE_FROM_CHAT_WINDOW"],
+                get = function(info)
+                    return ruleSet.hideFromChatWindow == true
+                end,
+                set = function(info, val)
+                    ruleSet.hideFromChatWindow = val
                     MessageClassifierBrowser:updateAllMessages()
                 end,
             },

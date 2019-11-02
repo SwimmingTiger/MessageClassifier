@@ -22,9 +22,12 @@ L["OPTION_EDIT_RULE_SET"] = "編輯"
 L["OPTION_REMOVE_RULE_SET"] = "移除"
 L["OPTION_RULE_SETS"] = "自定義規則"
 L["OPTION_DEFAULT_RULE_SETS"] = "默認規則"
-L["OPTION_RULE_LOGIC"] = "達成條件"
+L["OPTION_ACHIEVE_CONDITIONS"] = "達成條件"
 L["OPTION_RULE_LOGIC_OR"] = "任壹"
 L["OPTION_RULE_LOGIC_AND"] = "全部"
+L["OPTION_HIDE_FROM_CHAT_WINDOW"] = "不在聊天窗口顯示"
+L["OPTION_ENABLE"] = "啓用"
+L["OPTION_CLASS"] = "分類"
 
 -- Localized class variable
 L["author"] = "作者"

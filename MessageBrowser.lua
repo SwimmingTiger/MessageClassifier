@@ -12,6 +12,7 @@ MessageClassifierBrowser.uniqueMessages = 0
 MessageClassifierBrowser.duplicateMessages = 0
 MessageClassifierBrowser.sortViewQueue = {}
 MessageClassifierBrowser.msgViewContent = {}
+MessageClassifierBrowser.hideFromChatWindow = {}
 MessageClassifierBrowser.baseTime = time() - GetTime()
 MessageClassifierBrowser.updateInterval = 1
 MessageClassifierBrowser.pauseUpdate = false
@@ -218,11 +219,13 @@ function MessageClassifierBrowser:addMessage(content, authorWithServer, author, 
         self.messages[guid].count = self.messages[guid].count + 1
         self.duplicateMessages = self.duplicateMessages + 1
 
-        for _, v in pairs(self.messageViewIndex[guid]) do
-            if self.msgViewContent == v.parent then
-                self:sortMessageView(v)
+        if self.messageViewIndex[guid] then
+            for _, v in pairs(self.messageViewIndex[guid]) do
+                if self.msgViewContent == v.parent then
+                    self:sortMessageView(v)
+                end
+                v.text = formatMsgAsTitle(v.msg, v.path)
             end
-            v.text = formatMsgAsTitle(v.msg, v.path)
         end
     end
 end
@@ -231,8 +234,9 @@ function MessageClassifierBrowser:updateMessageTree(guid)
     if not self.messages[guid] then return end
     
     local msg = self.messages[guid]
-    msg.class = self:getMessageClass(msg, MessageClassifierConfig.classificationRules)
-    msg.class = self:getMessageClass(msg, MessageClassifierDefaultRules)
+    msg.class = {}
+    self:updateMessageClass(msg, MessageClassifierConfig.classificationRules)
+    self:updateMessageClass(msg, MessageClassifierDefaultRules)
     self:addMessageToTree(msg, msg.class, self.messageTree)
     self.msgTreeView:SetTree(self.messageTree)
 end
@@ -283,9 +287,7 @@ function MessageClassifierBrowser:addMessageToTree(msg, classPath, messageTree)
     end
 end
 
-function MessageClassifierBrowser:getMessageClass(msg, ruleSet)
-    local classPath = {}
-
+function MessageClassifierBrowser:updateMessageClass(msg, ruleSet)
     for _, rule in pairs(ruleSet) do
         if self:ruleMatch(msg, rule) then
             local class = rule.class
@@ -298,11 +300,9 @@ function MessageClassifierBrowser:getMessageClass(msg, ruleSet)
                 class = class:gsub('{channel}', msg.channel)
             end
 
-            classPath[class] = true
+            msg.class[class] = true
         end
     end
-
-    return classPath
 end
 
 function MessageClassifierBrowser:ruleMatch(msg, rule)
@@ -318,7 +318,8 @@ function MessageClassifierBrowser:ruleMatch(msg, rule)
     local match = false
     for _, expression in ipairs(rule.expressions) do
         if expression.operator == "unconditional" then
-            return true
+            match = true
+            break
         end
         
         local operator = expression.operator
@@ -348,21 +349,31 @@ function MessageClassifierBrowser:ruleMatch(msg, rule)
 
         if logicOr then
             if match then
-                return true
+                break
             end
         else
             if not match then
-                return false
+                break
             end
         end
     end
+
+    if rule.hideFromChatWindow then
+        self.hideFromChatWindow[msg.guid] = true
+    end
+
     return match
 end
 
 function MessageClassifierBrowser:updateAllMessages()
+    self.pauseUpdate = true
     self.messageTree = {}
     self.messageTreeIndex = {}
     self.messageViewIndex = {}
+    self.sortViewQueue = {}
+    self.msgViewContent = {}
+    self.hideFromChatWindow = {}
+    
     for guid in pairs(self.messages) do
         self:updateMessageTree(guid)
     end
