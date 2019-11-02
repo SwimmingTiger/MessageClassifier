@@ -358,7 +358,7 @@ function MessageClassifierBrowser:ruleMatch(msg, rule)
         end
     end
 
-    if rule.hideFromChatWindow then
+    if match and rule.hideFromChatWindow then
         self.hideFromChatWindow[msg.guid] = true
     end
 
