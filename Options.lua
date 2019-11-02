@@ -93,7 +93,7 @@ local function ruleToText(ruleSet)
     local text = string.format("%s: %s", L["OPTION_CLASS"], localizeClassPathWithColor(ruleSet.class))
     if #ruleSet.conditions > 1 then
         local logicOr = ruleSet.logic ~= "and"
-        text = text..string.format("\n%s (|cffc586c0%s|r):", L["OPTION_CONDITIONS"], logicOr and L["OPTION_RULE_LOGIC_OR"] or L["OPTION_RULE_LOGIC_AND"])
+        text = text..string.format("\n%s: |cffc586c0%s|r", L["OPTION_CONDITIONS"], logicOr and L["OPTION_RULE_LOGIC_OR"] or L["OPTION_RULE_LOGIC_AND"])
     else
         text = text..string.format("\n%s:", L["OPTION_CONDITIONS"])
     end
@@ -102,7 +102,7 @@ local function ruleToText(ruleSet)
             text = text..string.format("\n|cff569cd6%s|r", L["unconditional"])
             break
         end
-        text = text..string.format("\n|cffdcdcaa%s|r |cff569cd6%s|r |cffce9178%s|r", L[rule.field], L[rule.operator], rule.value)
+        text = text..string.format("\n    |cffdcdcaa%s|r |cff569cd6%s|r |cffce9178%s|r", L[rule.field], L[rule.operator], rule.value)
         if rule.caseSensitive then
             text = text..string.format(" (%s)", L["OPTION_COND_CASESENSITIVE"])
         end
@@ -340,6 +340,11 @@ function MessageClassifierConfigFrame:addRuleSetToView(index, ruleSet)
                 name = ruleToText(ruleSet),
                 width = "full",
             },
+            bottomLine = {
+                order = 99,
+                type = "header",
+                name = "",
+            },
         }
     }
     group.args[tostring(index)] = option
@@ -432,10 +437,19 @@ function MessageClassifierConfigFrame:editRuleSet(index)
                         inline = true,
                         name = "",
                         args = {
-                            logic = {
+                            addCondition = {
                                 order = 1,
+                                type = "execute",
+                                name = L["OPTION_ADD"],
+                                width = 0.5,
+                                func = function(info)
+                                    MessageClassifierConfigFrame:addCondition(index)
+                                end
+                            },
+                            logic = {
+                                order = 2,
                                 type = "select",
-                                width = 0.7,
+                                width = 2,
                                 name = L["OPTION_CONDITION_LOGIC"],
                                 values = {
                                     ["or"] = L["OPTION_RULE_LOGIC_OR"],
@@ -446,15 +460,6 @@ function MessageClassifierConfigFrame:editRuleSet(index)
                                 end,
                                 set = function(info, val)
                                     cache.logic = val
-                                end
-                            },
-                            addCondition = {
-                                order = 2,
-                                type = "execute",
-                                name = L["OPTION_ADD"],
-                                width = 0.5,
-                                func = function(info)
-                                    MessageClassifierConfigFrame:addCondition(index)
                                 end
                             },
                         }
@@ -586,6 +591,11 @@ function MessageClassifierConfigFrame:addConditionToView(ruleSetIndex, index, co
                     condition.value = val
                 end
             },
+            bottomLine = {
+                order = 99,
+                type = "header",
+                name = "",
+            },
         }
     }
     group.args[tostring(index)] = option
@@ -649,6 +659,11 @@ function MessageClassifierConfigFrame:addDefaultRuleSetToView(index, ruleSet)
                 order = 11,
                 type = "description",
                 name = ruleToText(ruleSet),
+            },
+            bottomLine = {
+                order = 99,
+                type = "header",
+                name = "",
             },
         }
     }
