@@ -1,6 +1,8 @@
 local L = LibStub("AceLocale-3.0"):NewLocale(..., "ruRU")
 if not L then return end
 
+-------------------------------------------------------------
+
 L = L or {}
 -- MessageClassifier
 L["DISABLE_TIPS"] = "Дедупликация сообщений общего чата/мирового чата: отключена"
@@ -15,3 +17,31 @@ L["OPTION_ENABLED_TOOLTIP"] = "Не отображать повторяющие�
 L["OPTION_MIN_DUP_INTERVAL"] = "Мин. Секунды для появления повторяющихся сообщений, 0 для скрытия"
 L["OPTION_RESET"] = "Сбросить фильтр"
 L["OPTION_RESET_TOOLTIP"] = "Очистить дубликаты записей сообщений, позволяя повторяющимся сообщениям отображаться снова"
+
+-------------------------------------------------------------
+
+local L = LibStub("AceLocale-3.0"):GetLocale(...)
+
+MessageClassifierDefaultRules = {
+    {
+        id = 1,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_BY_AUTHOR"]:format("{author}")
+    },
+    {
+        id = 2,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_BY_CHANNEL"]:format("{channel}")
+    },
+    {
+        id = 3,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_ALL_MESSAGES"]
+    }
+}

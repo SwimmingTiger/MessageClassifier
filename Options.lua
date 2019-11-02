@@ -5,151 +5,61 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 MessageClassifierConfig = {}
 
+--[[
+-- Fields and values of classificationRules:
+{
+    logic = "and"
+            "or"
+            Default: "or"
+    conditions = {
+        field: "author",
+               "channel"
+               "content"
+        operator: "equal"
+                  "not equal"
+                  "contain"
+                  "not contain"
+                  "match"
+                  "not match"
+                  "unconditional"
+        value: <string>
+               <regular expression>
+               Example: "molten"
+                        " AA "
+                        "15g"
+                        "%bAA%b"
+                        "%d+g%b"
+        
+        caseSensitive: true
+                       false
+                       Default: false
+    }
+    class: <string>,
+            Available variables: {author}
+                                 {channel},
+            Example: "RAID"
+                     "Sell"
+                     "Quest"
+                     "The Molten Core"
+                     "By Author/{author}"
+                     "By Channel/{channel}"
+    
+    hideFromChatWindow: true
+                        false
+                        Default: false
+    
+    enabled: true
+             false
+             Default: true
+}, ...
+]]
+MessageClassifierDefaultRules = MessageClassifierDefaultRules or {}
+
 local defaultConfig = {
     ["enabled"] = true,
     ["minDupInterval"] = 0,
     ["classificationRules"] = {},
     ["enabledDefaultRules"] = {},
-}
-
-MessageClassifierDefaultRules = {
-    --[[
-    -- Fields and values:
-    {
-        logic = "and"
-                "or"
-                Default: "or"
-        conditions = {
-            field: "author",
-                   "channel"
-                   "content"
-
-            operator: "equal"
-                      "not equal"
-                      "contain"
-                      "not contain"
-                      "match"
-                      "not match"
-                      "unconditional"
-
-            value: <string>
-                   <regular expression>
-                   Example: "molten"
-                            " AA "
-                            "15g"
-                            "%bAA%b"
-                            "%d+g%b"
-            
-            caseSensitive: true
-                           false
-                           Default: false
-        }
-
-        class: <string>,
-                Available variables: {author}
-                                     {channel},
-                Example: "RAID"
-                         "Sell"
-                         "Quest"
-                         "The Molten Core"
-                         "By Author/{author}"
-                         "By Channel/{channel}"
-        
-        hideFromChatWindow: true
-                            false
-                            Default: false
-        
-        enabled: true
-                 false
-                 Default: true
-    }]]
-    {
-        id = 1,
-        conditions = {
-            { operator = "unconditional" },
-        },
-        class = L["BROWSER_CLASSIFIED_BY_AUTHOR"]:format("{author}")
-    },
-    {
-        id = 2,
-        conditions = {
-            { operator = "unconditional" },
-        },
-        class = L["BROWSER_CLASSIFIED_BY_CHANNEL"]:format("{channel}")
-    },
-    {
-        id = 3,
-        conditions = {
-            { operator = "unconditional" },
-        },
-        class = L["BROWSER_CLASSIFIED_ALL_MESSAGES"]
-    },
-    {
-        id = 4,
-        conditions = {
-            {
-                operator = "contain",
-                field = "content",
-                value = "AA",
-            },
-        },
-        class = "AA/{author}"
-    },
-    {
-        id = 5,
-        conditions = {
-            {
-                operator = "contain",
-                field = "content",
-                value = "丝绸",
-            },
-            {
-                operator = "contain",
-                field = "content",
-                value = "魔纹",
-            },
-        },
-        class = "收布/{author}"
-    },
-    {
-        id = 7,
-        conditions = {
-            {
-                operator = "contain",
-                field = "content",
-                value = "厚皮",
-            },
-        },
-        class = "收皮/{author}"
-    },
-    {
-        id = 8,
-        conditions = {
-            {
-                operator = "contain",
-                field = "content",
-                value = "黑上",
-            },
-        },
-        class = "副本/黑石塔上层/{author}"
-    },
-    {
-        id = 9,
-        logic = "and",
-        conditions = {
-            {
-                operator = "contain",
-                field = "content",
-                value = "黑石塔",
-            },
-            {
-                operator = "contain",
-                field = "content",
-                value = "上层",
-            },
-        },
-        class = "副本/黑石塔上层/{author}"
-    },
 }
 
 local classPathLocales = {
@@ -501,7 +411,7 @@ function MessageClassifierConfigFrame:editRuleSet(index)
             class = {
                 order = 11,
                 type = "input",
-                name = L["OPTION_CLASS"],
+                name = L["OPTION_CLASS_EDIT_TITLE"],
                 width = "full",
                 get = function(info)
                     return localizeClassPath(cache.class)

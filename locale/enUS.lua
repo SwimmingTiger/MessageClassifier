@@ -1,6 +1,8 @@
 local L = LibStub("AceLocale-3.0"):NewLocale(..., "enUS", true, nil)
 if not L then return end
 
+-------------------------------------------------------------
+
 L = L or {}
 -- Browser
 L["BROWSER_CLASSIFIED_BY_AUTHOR"] = "By Author/%s"
@@ -38,6 +40,7 @@ L["OPTION_RULE_LOGIC_AND"] = "All"
 L["OPTION_HIDE_FROM_CHAT_WINDOW"] = "Hide from chat window"
 L["OPTION_ENABLE"] = "Enable"
 L["OPTION_CLASS"] = "Class"
+L["OPTION_CLASS_EDIT_TITLE"] = "Class (available variables: |cffc586c0{author}|r and |cffc586c0{channel}|r)"
 L["OPTION_CONDITION_FIELD"] = "Field"
 L["OPTION_CONDITION_OPERATOR"] = "Operator"
 L["OPTION_CONDITION_VALUE"] = "Value"
@@ -86,3 +89,31 @@ L["CHAN_SHORTNAME_Trade"] = true
 L["CHAN_SHORTNAME_LocalDefense"] = true
 L["CHAN_SHORTNAME_LFGChannel"] = true
 L["CHAN_SHORTNAME_WorldDefense"] = true
+
+-------------------------------------------------------------
+
+local L = LibStub("AceLocale-3.0"):GetLocale(...)
+
+MessageClassifierDefaultRules = {
+    {
+        id = 1,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_BY_AUTHOR"]:format("{author}")
+    },
+    {
+        id = 2,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_BY_CHANNEL"]:format("{channel}")
+    },
+    {
+        id = 3,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_ALL_MESSAGES"]
+    }
+}

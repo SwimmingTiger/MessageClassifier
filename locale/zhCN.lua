@@ -1,6 +1,8 @@
 local L = LibStub("AceLocale-3.0"):NewLocale(..., "zhCN")
 if not L then return end
 
+-------------------------------------------------------------
+
 L = L or {}
 -- Browser
 L["BROWSER_CLASSIFIED_BY_AUTHOR"] = "玩家列表/%s"
@@ -38,6 +40,7 @@ L["OPTION_RULE_LOGIC_AND"] = "全部"
 L["OPTION_HIDE_FROM_CHAT_WINDOW"] = "不在聊天窗口显示"
 L["OPTION_ENABLE"] = "启用"
 L["OPTION_CLASS"] = "分类"
+L["OPTION_CLASS_EDIT_TITLE"] = "分类 (可用变量: |cffc586c0{作者}|r 和 |cffc586c0{频道}|r)"
 L["OPTION_CONDITION_FIELD"] = "字段"
 L["OPTION_CONDITION_OPERATOR"] = "操作"
 L["OPTION_CONDITION_VALUE"] = "值"
@@ -87,3 +90,97 @@ L["CHAN_SHORTNAME_TRADE"]="交"
 L["CHAN_SHORTNAME_LOCALDEFENSE"]="本"
 L["CHAN_SHORTNAME_LFGCHANNEL"]="寻"
 L["CHAN_SHORTNAME_WORLDDEFENSE"]="世"
+
+-------------------------------------------------------------
+
+local L = LibStub("AceLocale-3.0"):GetLocale(...)
+
+MessageClassifierDefaultRules = {
+    {
+        id = 1,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_BY_AUTHOR"]:format("{author}")
+    },
+    {
+        id = 2,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_BY_CHANNEL"]:format("{channel}")
+    },
+    {
+        id = 3,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_ALL_MESSAGES"]
+    },
+    {
+        id = 4,
+        conditions = {
+            {
+                operator = "contain",
+                field = "content",
+                value = "AA",
+            },
+        },
+        class = "AA/{author}"
+    },
+    {
+        id = 5,
+        conditions = {
+            {
+                operator = "contain",
+                field = "content",
+                value = "丝绸",
+            },
+            {
+                operator = "contain",
+                field = "content",
+                value = "魔纹",
+            },
+        },
+        class = "收布/{author}"
+    },
+    {
+        id = 7,
+        conditions = {
+            {
+                operator = "contain",
+                field = "content",
+                value = "厚皮",
+            },
+        },
+        class = "收皮/{author}"
+    },
+    {
+        id = 8,
+        conditions = {
+            {
+                operator = "contain",
+                field = "content",
+                value = "黑上",
+            },
+        },
+        class = "副本/黑石塔上层/{author}"
+    },
+    {
+        id = 9,
+        logic = "and",
+        conditions = {
+            {
+                operator = "contain",
+                field = "content",
+                value = "黑石塔",
+            },
+            {
+                operator = "contain",
+                field = "content",
+                value = "上层",
+            },
+        },
+        class = "副本/黑石塔上层/{author}"
+    },
+}

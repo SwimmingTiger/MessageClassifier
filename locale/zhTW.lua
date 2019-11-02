@@ -1,6 +1,8 @@
 local L = LibStub("AceLocale-3.0"):NewLocale(..., "zhTW")
 if not L then return end
 
+-------------------------------------------------------------
+
 L = L or {}
 -- MessageClassifier
 L["DISABLE_TIPS"] = "Public channel/World channel message deduplication: Disabled"
@@ -31,6 +33,7 @@ L["OPTION_RULE_LOGIC_AND"] = "全部"
 L["OPTION_HIDE_FROM_CHAT_WINDOW"] = "不在聊天窗口顯示"
 L["OPTION_ENABLE"] = "啓用"
 L["OPTION_CLASS"] = "分類"
+L["OPTION_CLASS_EDIT_TITLE"] = "分類 (可用變量: |cffc586c0{作者}|r 和 |cffc586c0{頻道}|r)"
 L["OPTION_CONDITION_FIELD"] = "字段"
 L["OPTION_CONDITION_OPERATOR"] = "操作"
 L["OPTION_CONDITION_VALUE"] = "值"
@@ -79,3 +82,31 @@ L["CHAN_SHORTNAME_TRADE"]="交"
 L["CHAN_SHORTNAME_LOCALDEFENSE"]="本"
 L["CHAN_SHORTNAME_LFGCHANNEL"]="尋"
 L["CHAN_SHORTNAME_WORLDDEFENSE"]="世"
+
+-------------------------------------------------------------
+
+local L = LibStub("AceLocale-3.0"):GetLocale(...)
+
+MessageClassifierDefaultRules = {
+    {
+        id = 1,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_BY_AUTHOR"]:format("{author}")
+    },
+    {
+        id = 2,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_BY_CHANNEL"]:format("{channel}")
+    },
+    {
+        id = 3,
+        conditions = {
+            { operator = "unconditional" },
+        },
+        class = L["BROWSER_CLASSIFIED_ALL_MESSAGES"]
+    }
+}
