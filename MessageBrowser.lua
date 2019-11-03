@@ -425,7 +425,6 @@ function MessageClassifierBrowser:CreateView()
     self.searchEdit = AceGUI:Create("EditBox")
     self.searchEdit:SetRelativeWidth(0.8)
     self.searchEdit:SetCallback("OnEnterPressed", function(self, event, text)
-        print(text)
         MessageClassifierBrowser.searchText = text
         MessageClassifierBrowser:updateMsgView()
     end)
