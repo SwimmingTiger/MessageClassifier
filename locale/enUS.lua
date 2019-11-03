@@ -10,6 +10,11 @@ L["BROWSER_CLASSIFIED_BY_CHANNEL"] = "By Channel/%s"
 L["BROWSER_CLASSIFIED_ALL_MESSAGES"] = "All Messages"
 L["BROWSER_STATUS_BAR"] = "All messages %d, unique %d, duplicate %d, duplicate rate %0.2f%%"
 L["BROWSER_TITLE"] = "Message Browser"
+L["MOVE_BUTTON"] = "Move Button"
+L["Left-Click"] = true
+L["Shift-Click"] = true
+L["BROWSER_SETTING"] = "Settings"
+L["BROWSER_SEARCH"] = "Search"
 
 -- MessageClassifier
 L["DISABLE_TIPS"] = "Public channel/World channel message deduplication: Disabled"

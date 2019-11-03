@@ -4,6 +4,18 @@ if not L then return end
 -------------------------------------------------------------
 
 L = L or {}
+-- Browser
+L["BROWSER_CLASSIFIED_BY_AUTHOR"] = "玩家列表/%s"
+L["BROWSER_CLASSIFIED_BY_CHANNEL"] = "頻道列表/%s"
+L["BROWSER_CLASSIFIED_ALL_MESSAGES"] = "全部發言"
+L["BROWSER_STATUS_BAR"] = "共 %d 消息, 唯一 %d, 重複 %d, 重複率 %0.2f%%"
+L["BROWSER_TITLE"] = "消息瀏覽器"
+L["MOVE_BUTTON"] = "移動按鈕"
+L["Left-Click"] = "左鍵"
+L["Shift-Click"] = "Shift-左鍵"
+L["BROWSER_SETTING"] = "設置"
+L["BROWSER_SEARCH"] = "搜索"
+
 -- MessageClassifier
 L["DISABLE_TIPS"] = "Public channel/World channel message deduplication: Disabled"
 L["ENABLE_TIPS"] = "Public channel/World channel message deduplication: Enabled. You can toggle it with command /msgdd"

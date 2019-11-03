@@ -10,6 +10,11 @@ L["BROWSER_CLASSIFIED_BY_CHANNEL"] = "频道列表/%s"
 L["BROWSER_CLASSIFIED_ALL_MESSAGES"] = "全部发言"
 L["BROWSER_STATUS_BAR"] = "共 %d 消息, 唯一 %d, 重复 %d, 重复率 %0.2f%%"
 L["BROWSER_TITLE"] = "消息浏览器"
+L["MOVE_BUTTON"] = "移动按钮"
+L["Left-Click"] = "左键"
+L["Shift-Click"] = "Shift-左键"
+L["BROWSER_SETTING"] = "设置"
+L["BROWSER_SEARCH"] = "搜索"
 
 -- MessageClassifier
 L["DISABLE_TIPS"] = "公共频道/世界频道消息去重：已停用"

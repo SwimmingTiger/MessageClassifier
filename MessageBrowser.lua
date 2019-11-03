@@ -16,6 +16,7 @@ MessageClassifierBrowser.hideFromChatWindow = {}
 MessageClassifierBrowser.baseTime = time() - GetTime()
 MessageClassifierBrowser.updateInterval = 1
 MessageClassifierBrowser.pauseUpdate = false
+MessageClassifierBrowser.searchText = ""
 
 local function deepCompare(t1,t2,ignore_mt)
     local ty1 = type(t1)
@@ -408,7 +409,10 @@ function MessageClassifierBrowser:updateMsgView()
     self.msgView:SetMaxLines(self.msgView.msgSize)
     for i=1, self.msgView.msgSize do
         local msg = allMessages[i].msg
-        self.msgView:AddMessage(formatMsg(msg), 0xff / 255, 0xc0 / 255, 0xc0 / 255)
+        local content = formatMsg(msg)
+        if self.searchText == "" or content:lower():find(self.searchText:lower()) ~= nil then
+            self.msgView:AddMessage(content, 0xff / 255, 0xc0 / 255, 0xc0 / 255)
+        end
     end
     self.msgScroll:updateScroll()
 end
@@ -418,9 +422,23 @@ function MessageClassifierBrowser:CreateView()
     self:updateStatusBar()
     self:SetLayout("Flow")
 
-    --[[self.searchEdit = AceGUI:Create("EditBox")
-    self.searchEdit:SetRelativeWidth(1)
-    self:AddChild(self.searchEdit)]]
+    self.searchEdit = AceGUI:Create("EditBox")
+    self.searchEdit:SetRelativeWidth(0.8)
+    self.searchEdit:SetCallback("OnEnterPressed", function(self, event, text)
+        print(text)
+        MessageClassifierBrowser.searchText = text
+        MessageClassifierBrowser:updateMsgView()
+    end)
+    self:AddChild(self.searchEdit)
+
+    self.settingButton = AceGUI:Create("Button")
+    self.settingButton:SetText(L["BROWSER_SETTING"])
+    self.settingButton:SetHeight(20)
+    self.settingButton:SetRelativeWidth(0.15)
+    self.settingButton:SetCallback("OnClick", function(self)
+        InterfaceOptionsFrame_OpenToCategory(MessageClassifierConfigFrame.blizOptions)
+    end)
+    self:AddChild(self.settingButton)
 
     self.msgTreeView = AceGUI:Create("TreeGroup")
     self.msgTreeView:SetFullWidth(true)
@@ -511,8 +529,71 @@ function MessageClassifierBrowser:CreateView()
 
     SLASH_MSGCF1 = "/msgcf"
     SlashCmdList["MSGCF"] = function(...)
-        MessageClassifierBrowser:Show()
+        if MessageClassifierBrowser:IsShown() then
+            MessageClassifierBrowser:Hide()
+        else
+            MessageClassifierBrowser:Show()
+        end
     end
 end
 
 MessageClassifierBrowser:CreateView()
+
+--minimap icon
+MessageClassifierBrowser.icon = CreateFrame("Button", "MessageClassifierBrowserIcon", Minimap)
+function MessageClassifierBrowser.icon:CreateView()
+    self:SetClampedToScreen(true)
+    self:SetMovable(true)
+    self:EnableMouse(true)
+    self:RegisterForDrag("LeftButton")
+    self:RegisterForClicks("LeftButtonUp")
+    self:SetScript("OnDragStart", function(self)
+        if IsShiftKeyDown() then
+            self:StartMoving()
+        end
+    end)
+    self:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+    end)
+    self:SetScript("OnClick", function()
+        if MessageClassifierBrowser:IsShown() then
+            MessageClassifierBrowser:Hide()
+        else
+            MessageClassifierBrowser:Show()
+        end
+    end)
+
+    self:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
+        GameTooltip:SetText(L["CONFIG_PAGE_TITLE"])
+        GameTooltip:AddDoubleLine(L["Left-Click"], L["BROWSER_TITLE"], 1, 1, 1, 1, 1, 1)
+        GameTooltip:AddDoubleLine(L["Shift-Click"], L["MOVE_BUTTON"], 1, 1, 1, 1, 1, 1)
+        GameTooltip:Show()
+    end)
+    
+    self:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+    end)
+    
+    self:SetFrameStrata('LOW')
+    self:SetWidth(31)
+    self:SetHeight(31)
+    self:SetFrameLevel(9)
+    self:SetHighlightTexture('Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight')
+    self:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 0, 0)
+    
+    self.overlay = self:CreateTexture(nil, 'OVERLAY')
+    self.overlay:SetWidth(53)
+    self.overlay:SetHeight(53)
+    self.overlay:SetTexture('Interface\\Minimap\\MiniMap-TrackingBorder')
+    self.overlay:SetPoint('TOPLEFT', 0,0)
+    
+    self.icon = self:CreateTexture(nil, 'BACKGROUND')
+    self.icon:SetWidth(15)
+    self.icon:SetHeight(15)
+    self.icon:SetTexture("Interface\\Addons\\"..ADDON_NAME.."\\img\\logo")
+    self.icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+    self.icon:SetPoint('CENTER',1,1)
+    
+end
+MessageClassifierBrowser.icon:CreateView()
