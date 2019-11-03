@@ -196,9 +196,11 @@ end
 function MessageClassifierBrowser:addMessage(content, authorWithServer, author, channelID, channelName, authorGUID, guid, guidInt)
     self.allMessages = self.allMessages + 1
     if not self.messages[guid] then
-        if authorWithServer ~= author .. '-' .. GetRealmName() then
-            -- From the other realm, add the suffix
-            author = authorWithServer
+        local realmPrefix = '-'..GetRealmName()
+        if author:sub(-realmPrefix:len(), -1) == realmPrefix then
+            -- Same as the player's realm, remove the suffix.
+            -- We need this on Wow retail.
+            author = author:sub(1, -realmPrefix:len() - 1)
         end
         local updateTime = GetTime() + self.baseTime
         self.messages[guid] = {
