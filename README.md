@@ -17,7 +17,7 @@ Macro
 
 Screenshots
 -----------------
-![Usage / Configure](doc/img/configure.png "Usage / Configure")
+![Usage / Configure](doc/img/usage.jpg "Usage / Configure")
 
 TODO
 -----------------
