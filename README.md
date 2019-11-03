@@ -1,6 +1,7 @@
 Description
 -----------------
 Simply filter duplicate messages in public channels and world channels.
+At the same time, classify and browse messages with complex and specific rules.
 
 Download [![Build Status](https://travis-ci.com/SwimmingTiger/MessageClassifier.svg)](https://travis-ci.com/SwimmingTiger/MessageClassifier)
 -----------------
@@ -10,21 +11,16 @@ Features
 -----------------
 * Filter duplicate messages in public/private/world channels. You will only see the same content from the same person once.
 * You can set to allow duplicate messages to reappear after a specified number of seconds.
+* Messages will be classified by custom rules and displayed in the message browser.
+* With a simple and clear classification rule editor, you can collect information according to your needs.
+* The message browser provides a keyword search function, and the content can be directly selected and copied (ctrl+c).
+
 
 Macro
 -----------------
 * Enable or disable the filter: `/msgdd`
+* Open the message browser: `/msgcf`
 
 Screenshots
 -----------------
 ![Usage / Configure](doc/img/usage.jpg "Usage / Configure")
-
-TODO
------------------
-The addon's project name is `Message Classifier`, not the `Message Deduplication`, because it has more targets than a message filter.
-
-I expect to add a UI to the addon to display the messages received and sort by the last arrival time of the duplicate message. In addition, I also consider adding features that are categorized by keyword. You can classify messages by adding keywords as needed.
-
-The target on the UI is similar to LookingForGroup or ClassicLFG, but it can be used not only for Dungeon / RAID, but also for selling, buying, quest or asking a question. And, the purpose of the addon is just to let you find the message you want, not to help you automatically create a team or automatically join a team. The addon does not add any features that automatically send messages.
-
-Although these features have not been implemented, simple message filtering is already available. Currently the addon is titled `Message Deduplication` in Wow to match the functionality it has implemented.
