@@ -17,10 +17,10 @@ L["BROWSER_SETTING"] = "設置"
 L["BROWSER_SEARCH"] = "搜索"
 
 -- MessageClassifier
-L["DISABLE_TIPS"] = "Public channel/World channel message deduplication: Disabled"
-L["ENABLE_TIPS"] = "Public channel/World channel message deduplication: Enabled. You can toggle it with command /msgdd"
-L["ENABLE_TIPS_WITH_BIGFOOT"] = "Public channel/World channel message deduplication: Enabled. You can turn it off in the minimap BigFoot button package."
-L["RESET_TIPS"] = "Public channel/World channel message deduplication: Filter has been reset"
+L["DISABLE_TIPS"] = "公共頻道/世界頻道消息去重：已停用"
+L["ENABLE_TIPS"] = "公共頻道/世界頻道消息去重：已啟用，可用 /msgdd 命令進行開關。"
+L["ENABLE_TIPS_WITH_BIGFOOT"] = "公共頻道/世界頻道消息去重：已啟用，可在小地圖大腳按鍵包中關閉"
+L["RESET_TIPS"] = "公共頻道/世界頻道消息去重：過濾器已重置"
 
 -- Options
 L["CONFIG_PAGE_TITLE"] = "聊天消息分類去重"
