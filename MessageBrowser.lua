@@ -410,7 +410,6 @@ function MessageClassifierBrowser:updateMsgView()
         local msg = allMessages[i].msg
         self.msgView:AddMessage(formatMsg(msg), 0xff / 255, 0xc0 / 255, 0xc0 / 255)
     end
-    self.msgView.msgSizeLineSpacing = self.msgView:CalculateLineSpacing()
     self.msgScroll:updateScroll()
 end
 
@@ -451,12 +450,19 @@ function MessageClassifierBrowser:CreateView()
     self.msgView:SetIndentedWordWrap(true)
     self.msgView:SetFontObject(ChatFontNormal)
     self.msgView:EnableMouse(true)
-    self.msgView:EnableMouseWheel(1)
+    self.msgView:EnableMouseWheel(true)
     self.msgView:SetHyperlinksEnabled(true)
     self.msgView:SetTextCopyable(true)
     self.msgView:SetPoint("TOPLEFT", 0, 0)
     self.msgView:SetPoint("BOTTOMRIGHT", -20, 0)
     self.msgView:SetJustifyH("LEFT")
+    
+    function self.msgView:OnMouseWheel(value)
+        -- Scroll one line at a time
+        local offset = self:GetScrollOffset() - value
+        self.msgScroll:OnVerticalScroll(offset)
+    end
+    self.msgView:SetScript("OnMouseWheel", self.msgView.OnMouseWheel)
 
     self.msgView.showItemTooltip = false
     function self.msgView:showHyperlink(link)
@@ -484,7 +490,6 @@ function MessageClassifierBrowser:CreateView()
     self.msgScroll:SetPoint("BOTTOMRIGHT", -20, 0)
 
     self.msgView.msgSize = 0
-    self.msgView.msgSizeLineSpacing = 14
     self.msgView:SetMaxLines(self.msgView.msgSize)
 
     self.msgScroll.msgView = self.msgView
@@ -496,11 +501,12 @@ function MessageClassifierBrowser:CreateView()
         end
         local offset = FauxScrollFrame_GetOffset(self)
         self.msgView:SetScrollOffset(offset)
-        FauxScrollFrame_Update(self, lines, 1, self.msgView.msgSizeLineSpacing)
+        FauxScrollFrame_Update(self, lines, 1, 1)
     end
-    self.msgScroll:SetScript("OnVerticalScroll", function(self, offset)
-        FauxScrollFrame_OnVerticalScroll(self, offset, self.msgView.msgSizeLineSpacing, self.updateScroll)
-    end)
+    function self.msgScroll:OnVerticalScroll(offset)
+        FauxScrollFrame_OnVerticalScroll(self, offset, 1, self.updateScroll)
+    end
+    self.msgScroll:SetScript("OnVerticalScroll", self.msgScroll.OnVerticalScroll)
     self:Hide()
 
     SLASH_MSGCF1 = "/msgcf"
