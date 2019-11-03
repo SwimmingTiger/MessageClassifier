@@ -38,6 +38,7 @@ L["OPTION_CONDITION_FIELD"] = "字段"
 L["OPTION_CONDITION_OPERATOR"] = "操作"
 L["OPTION_CONDITION_VALUE"] = "值"
 L["OPTION_COND_CASESENSITIVE"] = "區分大小寫"
+L["OPTION_SELECT_ALL"] = "全選"
 
 -- Localized class variable
 L["author"] = "作者"

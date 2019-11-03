@@ -45,6 +45,7 @@ L["OPTION_CONDITION_FIELD"] = "Field"
 L["OPTION_CONDITION_OPERATOR"] = "Operator"
 L["OPTION_CONDITION_VALUE"] = "Value"
 L["OPTION_COND_CASESENSITIVE"] = "Case Sensitive"
+L["OPTION_SELECT_ALL"] = "Select All"
 
 -- Rule Fields
 L["author"] = true

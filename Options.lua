@@ -199,6 +199,63 @@ function MessageClassifierConfigFrame:loadConfig()
                 inline = true,
                 name = L["OPTION_RULE_SETS"],
                 args = {
+                    actionBar = {
+                        order = 0, -- at the top
+                        type = "group",
+                        inline = true,
+                        name = "",
+                        args = {
+                            enabledAll = {
+                                order = 1,
+                                type = "toggle",
+                                name = L["OPTION_SELECT_ALL"],
+                                width = 0.5,
+                                get = function(info)
+                                    local ruleSets = MessageClassifierConfig.classificationRules
+                                    for _, rule in ipairs(ruleSets) do
+                                        if rule.enabled == false then
+                                            return false
+                                        end
+                                    end
+                                    return true                                    
+                                end,
+                                set = function(info, val)
+                                    local ruleSets = MessageClassifierConfig.classificationRules
+                                    for _, rule in ipairs(ruleSets) do
+                                        rule.enabled = val
+                                    end
+                                    MessageClassifierBrowser:updateAllMessages()
+                                end,
+                            },
+                            hideFromChatWindowAll = {
+                                order = 2,
+                                type = "toggle",
+                                name = L["OPTION_SELECT_ALL"],
+                                width = 1.5,
+                                get = function(info)
+                                    local ruleSets = MessageClassifierConfig.classificationRules
+                                    for _, rule in ipairs(ruleSets) do
+                                        if rule.hideFromChatWindow ~= true then
+                                            return false
+                                        end
+                                    end
+                                    return true                                    
+                                end,
+                                set = function(info, val)
+                                    local ruleSets = MessageClassifierConfig.classificationRules
+                                    for _, rule in ipairs(ruleSets) do
+                                        rule.hideFromChatWindow = val
+                                    end
+                                    MessageClassifierBrowser:updateAllMessages()
+                                end,
+                            },
+                            bottomLine = {
+                                order = 99,
+                                type = "header",
+                                name = "",
+                            },
+                        }
+                    },
                     addRuleSet = {
                         order = 999999, -- at the end
                         type = "execute",
@@ -214,7 +271,65 @@ function MessageClassifierConfigFrame:loadConfig()
                 type = "group",
                 inline = true,
                 name = L["OPTION_DEFAULT_RULE_SETS"],
-                args = {},
+                args = {
+                    actionBar = {
+                        order = 0, -- at the top
+                        type = "group",
+                        inline = true,
+                        name = "",
+                        args = {
+                            enabledAll = {
+                                order = 1,
+                                type = "toggle",
+                                name = L["OPTION_SELECT_ALL"],
+                                width = 0.5,
+                                get = function(info)
+                                    local ruleSets = MessageClassifierDefaultRules
+                                    for _, rule in ipairs(ruleSets) do
+                                        if MessageClassifierConfig.enabledDefaultRules[rule.id] == false then
+                                            return false
+                                        end
+                                    end
+                                    return true                                    
+                                end,
+                                set = function(info, val)
+                                    local ruleSets = MessageClassifierDefaultRules
+                                    for _, rule in ipairs(ruleSets) do
+                                        MessageClassifierConfig.enabledDefaultRules[rule.id] = val
+                                    end
+                                    MessageClassifierBrowser:updateAllMessages()
+                                end,
+                            },
+                            hideFromChatWindowAll = {
+                                order = 2,
+                                type = "toggle",
+                                name = L["OPTION_SELECT_ALL"],
+                                width = 1.5,
+                                get = function(info)
+                                    local ruleSets = MessageClassifierDefaultRules
+                                    for _, rule in ipairs(ruleSets) do
+                                        if rule.hideFromChatWindow ~= true then
+                                            return false
+                                        end
+                                    end
+                                    return true                                    
+                                end,
+                                set = function(info, val)
+                                    local ruleSets = MessageClassifierDefaultRules
+                                    for _, rule in ipairs(ruleSets) do
+                                        rule.hideFromChatWindow = val
+                                    end
+                                    MessageClassifierBrowser:updateAllMessages()
+                                end,
+                            },
+                            bottomLine = {
+                                order = 99,
+                                type = "header",
+                                name = "",
+                            },
+                        }
+                    },
+                },
             }
         }
     }
@@ -232,22 +347,22 @@ function MessageClassifierConfigFrame:loadConfig()
     self.blizOptions = AceConfigDialog:AddToBlizOptions(ADDON_NAME, L["CONFIG_PAGE_TITLE"])
 end
 
-function MessageClassifierConfigFrame:resetRules()
-    MessageClassifierConfig.classificationRules = {}
-    MessageClassifierConfig.enabledDefaultRules = {}
-
-    self.configTable.args.ruleSets.args = {}
+function MessageClassifierConfigFrame:updateRuleSetView()
+    self.configTable.args.ruleSets.args = {
+        actionBar = self.configTable.args.ruleSets.args.actionBar,
+        addRuleSet = self.configTable.args.ruleSets.args.addRuleSet,
+    }
     for k,v in pairs(MessageClassifierConfig.classificationRules) do
         self:addRuleSetToView(k, v)
     end
+    MessageClassifierBrowser:updateAllMessages()
+end
 
+function MessageClassifierConfigFrame:updateDefaultRuleSetView()
     self.configTable.args.defaultRuleSets.args = {}
     for k,v in pairs(MessageClassifierDefaultRules) do
         self:addDefaultRuleSetToView(k, v)
     end
-    
-    MessageClassifierBrowser:updateAllMessages()
-    --AceConfigRegistry:NotifyChange(ADDON_NAME)
 end
 
 function MessageClassifierConfigFrame:addRuleSet()
@@ -271,9 +386,9 @@ end
 function MessageClassifierConfigFrame:removeRuleSet(index)
     table.remove(MessageClassifierConfig.classificationRules, index)
 
-    local addRuleSet = self.configTable.args.ruleSets.args.addRuleSet
     self.configTable.args.ruleSets.args = {
-        addRuleSet = addRuleSet,
+        actionBar = self.configTable.args.ruleSets.args.actionBar,
+        addRuleSet = self.configTable.args.ruleSets.args.addRuleSet,
     }
     for k,v in pairs(MessageClassifierConfig.classificationRules) do
         self:addRuleSetToView(k, v)
