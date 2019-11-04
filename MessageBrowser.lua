@@ -324,49 +324,50 @@ function MessageClassifierBrowser:ruleMatch(msg, rule)
 
     local logicOr = rule.logic ~= "and"
     local match = false
-    for _, expression in ipairs(rule.conditions) do
-        if expression.operator == "unconditional" then
-            match = true
-            break
-        end
-        
-        local operator = expression.operator
-        local field = msg[expression.field or ""] or ""
-        local value = expression.value or ""
+    if #rule.conditions == 0 then
+        match = true
+    else
+        for _, expression in ipairs(rule.conditions) do
+            local operator = expression.operator
+            local field = msg[expression.field or ""] or ""
+            local value = expression.value or ""
 
-        if not expression.caseSensitive then
-            field = field:lower()
-            if operator ~= "match" and operator ~= "not match" then
-                value = value:lower()
+            if not expression.caseSensitive then
+                field = field:lower()
+                if operator ~= "match" and operator ~= "not match" then
+                    value = value:lower()
+                end
             end
-        end
 
-        if operator == "equal" then
-            match = field == value
-        elseif operator == "not equal" then
-            match = field ~= value
-        elseif operator == "contain" then
-            match = field:find(value) ~= nil
-        elseif operator == "not contain" then
-            match = field:find(value) == nil
-        elseif operator == "match" then
-            match = field:match(value) ~= nil
-        elseif operator == "not match" then
-            match = field:match(value) == nil
-        end
-
-        if logicOr then
-            if match then
-                break
+            if operator == "equal" then
+                match = field == value
+            elseif operator == "not equal" then
+                match = field ~= value
+            elseif operator == "contain" then
+                match = field:find(value) ~= nil
+            elseif operator == "not contain" then
+                match = field:find(value) == nil
+            elseif operator == "match" then
+                match = field:match(value) ~= nil
+            elseif operator == "not match" then
+                match = field:match(value) == nil
             end
-        else
-            if not match then
-                break
+
+            if logicOr then
+                if match then
+                    break
+                end
+            else
+                if not match then
+                    break
+                end
             end
         end
     end
 
-    if match and rule.hideFromChatWindow then
+    if match and (rule.id ~= nil
+                    and MessageClassifierConfig.defRulHideFromChatWindow[rule.id] == true
+                    or rule.hideFromChatWindow == true) then
         self.hideFromChatWindow[msg.guid] = true
     end
 

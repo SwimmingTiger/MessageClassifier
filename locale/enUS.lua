@@ -24,8 +24,8 @@ L["RESET_TIPS"] = "Public channel/World channel message deduplication: Filter ha
 
 -- Options
 L["CONFIG_PAGE_TITLE"] = "Message Classifier"
-L["OPTION_ENABLED"] = "Enable duplicate message filter"
-L["OPTION_ENABLED_TOOLTIP"] = "Do not display duplicate messages in public channel/world channels"
+L["OPTION_ENABLED"] = "Enable message classifier duplicate filter"
+L["OPTION_ENABLED_TOOLTIP"] = "Don't display duplicate messages in public channel/world channels. And classify and collect messages into a browser."
 L["OPTION_MIN_DUP_INTERVAL"] = "Min seconds for duplicate messages appear, 0 to always hide"
 L["OPTION_RESET"] = "Reset filter"
 L["OPTION_RESET_TOOLTIP"] = "Clear duplicate message records, allowing duplicate messages to be displayed again"
@@ -38,14 +38,15 @@ L["OPTION_CANCEL"] = "Cancel"
 L["OPTION_REMOVE"] = "Remove"
 L["OPTION_RULE_SETS"] = "Custom Rules"
 L["OPTION_DEFAULT_RULE_SETS"] = "Default Rules"
-L["OPTION_CONDITIONS"] = "Conditions"
+L["OPTION_CONDITIONS"] = "If"
 L["OPTION_CONDITION_LOGIC"] = "Logic"
-L["OPTION_RULE_LOGIC_OR"] = "One of the conditions is true"
-L["OPTION_RULE_LOGIC_AND"] = "All conditions are true at the same time"
+L["OPTION_RULE_LOGIC_OR"] = "one of the conditions is true"
+L["OPTION_RULE_LOGIC_AND"] = "all conditions are true at the same time"
 L["OPTION_HIDE_FROM_CHAT_WINDOW"] = "Hide from chat window"
 L["OPTION_ENABLE"] = "Enable"
-L["OPTION_CLASS"] = "Class"
-L["OPTION_CLASS_EDIT_TITLE"] = "Class (available variables: |cffc586c0{author}|r and |cffc586c0{channel}|r)"
+L["OPTION_CLASS"] = "Then add to this class"
+L["OPTION_CLASS_NO_CONDITIONS"] = "Always add to this class"
+L["OPTION_CLASS_EDIT_TITLE"] = "Then add to this class (available variables: |cffc586c0{author}|r and |cffc586c0{channel}|r)"
 L["OPTION_CONDITION_FIELD"] = "Field"
 L["OPTION_CONDITION_OPERATOR"] = "Operator"
 L["OPTION_CONDITION_VALUE"] = "Value"
@@ -58,7 +59,6 @@ L["channel"] = true
 L["content"] = true
 
 -- Rule Operators
-L["unconditional"] = true
 L["equal"] = true
 L["not equal"] = true
 L["contain"] = true
@@ -103,23 +103,17 @@ local L = LibStub("AceLocale-3.0"):GetLocale(...)
 MessageClassifierDefaultRules = {
     {
         id = 1,
-        conditions = {
-            { operator = "unconditional" },
-        },
+        conditions = {},
         class = L["BROWSER_CLASSIFIED_BY_AUTHOR"]:format("{author}")
     },
     {
         id = 2,
-        conditions = {
-            { operator = "unconditional" },
-        },
+        conditions = {},
         class = L["BROWSER_CLASSIFIED_BY_CHANNEL"]:format("{channel}")
     },
     {
         id = 3,
-        conditions = {
-            { operator = "unconditional" },
-        },
+        conditions = {},
         class = L["BROWSER_CLASSIFIED_ALL_MESSAGES"]
     },
     {
@@ -219,11 +213,6 @@ MessageClassifierDefaultRules = {
         ["class"] = "Instance/The Deadmines/{author}",
         ["conditions"] = {
             {
-                ["value"] = " dm ",
-                ["field"] = "content",
-                ["operator"] = "contain",
-            }, -- [1]
-            {
                 ["value"] = " vc ",
                 ["operator"] = "contain",
                 ["field"] = "content",
@@ -239,6 +228,33 @@ MessageClassifierDefaultRules = {
                 ["field"] = "content",
             }, -- [4]
         },
+    }, -- [8]
+    {
+        id = 3103,
+        ["class"] = "Instance/The Deadmines/{author}",
+        ["conditions"] = {
+            {
+                ["value"] = " dm ",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            }, -- [1]
+            {
+                ["value"] = " dm e",
+                ["operator"] = "not contain",
+                ["field"] = "content",
+            }, -- [2]
+            {
+                ["value"] = " dm w",
+                ["operator"] = "not contain",
+                ["field"] = "content",
+            }, -- [3]
+            {
+                ["value"] = " dm n",
+                ["operator"] = "not contain",
+                ["field"] = "content",
+            }, -- [4]
+        },
+        ["logic"] = "and",
     }, -- [8]
     {
         id = 3004,
@@ -528,7 +544,7 @@ MessageClassifierDefaultRules = {
     }, -- [23]
     {
         id = 3019,
-        ["class"] = "Instance/Blackrock/{author}",
+        ["class"] = "Instance/Blackrock Spire/{author}",
         ["conditions"] = {
             {
                 ["value"] = "blackrock",
@@ -569,7 +585,17 @@ MessageClassifierDefaultRules = {
         ["class"] = "Instance/Dire Maul/{author}",
         ["conditions"] = {
             {
-                ["value"] = " dm ",
+                ["value"] = " dm e",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            }, -- [1]
+            {
+                ["value"] = " dm w",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            }, -- [1]
+            {
+                ["value"] = " dm n",
                 ["field"] = "content",
                 ["operator"] = "contain",
             }, -- [1]
