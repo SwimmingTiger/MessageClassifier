@@ -135,7 +135,7 @@ local function shortChannelName(channel)
 end
 
 local function formatMsg(msg)
-    local text = string.format("|cffffa900%s|r |Hchannel:channel:%d|h[%s]|h [|Hplayer:%s:-1|h%s|h] %s", date("%H:%M:%S", msg.updateTime), msg.channelID, shortChannelName(msg.channel), msg.authorWithServer, msg.author, msg.content)
+    local text = string.format("|cffffa900%s|r |Hchannel:channel:%d|h[%s]|h [|Hplayer:%s:-1|h%s|h] %s", date("%H:%M:%S", msg.updateTime), msg.channelID, shortChannelName(msg.channel), msg.authorFullName, msg.author, msg.content)
     if msg.count > 1 then
         text = getColoredCount(msg.count)..text
     end
@@ -193,21 +193,26 @@ function MessageClassifierBrowser:sortMessageView(view)
     end
 end
 
-function MessageClassifierBrowser:addMessage(content, authorWithServer, author, channelID, channelName, authorGUID, guid, guidInt)
+function MessageClassifierBrowser:addMessage(content, authorFullName, author, channelID, channelName, authorGUID, guid, guidInt)
     self.allMessages = self.allMessages + 1
     if not self.messages[guid] then
         local realmPrefix = '-'..GetRealmName()
+        -- Same as the player's realm, remove the suffix.
+        -- We need this on Wow retail.
         if author:sub(-realmPrefix:len(), -1) == realmPrefix then
-            -- Same as the player's realm, remove the suffix.
-            -- We need this on Wow retail.
             author = author:sub(1, -realmPrefix:len() - 1)
         end
+        -- Same as the player's realm, remove the suffix.
+        if authorFullName:sub(-realmPrefix:len(), -1) == realmPrefix then
+            authorFullName = authorFullName:sub(1, -realmPrefix:len() - 1)
+        end
+
         local updateTime = GetTime() + self.baseTime
         self.messages[guid] = {
             guid = guid,
             authorGUID = authorGUID,
             author = getColoredName(author, authorGUID),
-            authorWithServer = authorWithServer,
+            authorFullName = authorFullName,
             content = content,
             channel = channelName,
             channelID = channelID,
