@@ -397,19 +397,21 @@ function MessageClassifierBrowser:updateStatusBar()
 end
 
 function MessageClassifierBrowser:updateMsgView()
-    local function getAllMessages(tree, result)
+    local function getAllMessages(tree, result, uniqueMap)
         for i=1, #tree do
             local item = tree[i]
-            if item.msg then
+            if item.msg and not uniqueMap[item.msg.guid] then
                 result[#result + 1] = item
+                uniqueMap[item.msg.guid] = true
             end
             if item.children then
-                getAllMessages(item.children, result)
+                getAllMessages(item.children, result, uniqueMap)
             end
         end
     end
     local allMessages = {}
-    getAllMessages(self.msgViewContent.children, allMessages)
+    local uniqueMap = {}
+    getAllMessages(self.msgViewContent.children, allMessages, uniqueMap)
     table.sort(allMessages, msgComp)
 
     self.msgView:Clear()
