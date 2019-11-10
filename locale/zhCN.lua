@@ -125,9 +125,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "厚皮",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [1]
+            },
         },
-    }, -- [1]
+    },
     {
         id = 1002,
         ["class"] = "收布/{author}",
@@ -136,14 +136,14 @@ MessageClassifierDefaultRules = {
                 ["value"] = "丝绸",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "纹布",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
         },
-    }, -- [2]
+    },
     {
         id = 1003,
         ["conditions"] = {
@@ -151,10 +151,10 @@ MessageClassifierDefaultRules = {
                 ["value"] = "航空",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [1]
+            },
         },
         ["class"] = "航空/{author}",
-    }, -- [3]
+    },
     {
         id = 2001,
         ["class"] = "副本/AA/{author}",
@@ -163,9 +163,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "AA",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [4]
+    },
     {
         id = 2002,
         ["class"] = "任务/{author}",
@@ -174,9 +174,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "任务",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [5]
+    },
     {
         id = 3001,
         ["conditions"] = {
@@ -184,15 +184,15 @@ MessageClassifierDefaultRules = {
                 ["value"] = "怒焰",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [1]
+            },
             {
                 ["value"] = "NY",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
         },
         ["class"] = "副本/怒焰裂谷/{author}",
-    }, -- [6]
+    },
     {
         id = 3002,
         ["class"] = "副本/哀嚎洞穴/{author}",
@@ -201,14 +201,14 @@ MessageClassifierDefaultRules = {
                 ["value"] = "哀嚎",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "AH",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
         },
-    }, -- [7]
+    },
     {
         id = 3003,
         ["class"] = "副本/死亡矿井/{author}",
@@ -217,19 +217,19 @@ MessageClassifierDefaultRules = {
                 ["value"] = "矿井",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "死矿",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
             {
                 ["value"] = "SK",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [3]
+            },
         },
-    }, -- [8]
+    },
     {
         id = 3004,
         ["class"] = "副本/影牙城堡/{author}",
@@ -238,14 +238,14 @@ MessageClassifierDefaultRules = {
                 ["value"] = "影牙",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [1]
+            },
             {
                 ["value"] = "YY",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [2]
+            },
         },
-    }, -- [9]
+    },
     {
         id = 3105,
         ["class"] = "副本/黑暗深渊/{author}",
@@ -254,9 +254,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "黑暗",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [10]
+    },
     {
         id = 3005,
         ["class"] = "副本/监狱/{author}",
@@ -265,9 +265,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "监狱",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [10]
+    },
     {
         id = 3006,
         ["class"] = "副本/诺莫瑞根/{author}",
@@ -276,19 +276,19 @@ MessageClassifierDefaultRules = {
                 ["value"] = "诺莫",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "瑞根",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [2]
+            },
             {
                 ["value"] = "矮子",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [3]
+            },
         },
-    }, -- [11]
+    },
     {
         id = 3007,
         ["class"] = "副本/剃刀沼泽/{author}",
@@ -297,19 +297,19 @@ MessageClassifierDefaultRules = {
                 ["value"] = "剃刀",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "沼泽",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
             {
                 ["value"] = "ZZ",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [3]
+            },
         },
-    }, -- [12]
+    },
     {
         id = 3008,
         ["class"] = "副本/血色修道院/{author}",
@@ -318,9 +318,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "血色",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [13]
+    },
     {
         id = 3009,
         ["class"] = "副本/血色修道院：墓地/{author}",
@@ -329,9 +329,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "墓地",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [14]
+    },
     {
         id = 3010,
         ["class"] = "副本/血色修道院：图书馆/{author}",
@@ -340,9 +340,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "图书馆",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [15]
+    },
     {
         id = 3011,
         ["class"] = "副本/血色修道院：军械库/{author}",
@@ -351,9 +351,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "军械库",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [16]
+    },
     {
         id = 3012,
         ["class"] = "副本/血色修道院：大教堂/{author}",
@@ -362,9 +362,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "教堂",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [17]
+    },
     {
         id = 3013,
         ["class"] = "副本/剃刀高地/{author}",
@@ -373,24 +373,24 @@ MessageClassifierDefaultRules = {
                 ["value"] = "剃刀",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "高地",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
             {
                 ["value"] = "TDGD",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [3]
+            },
             {
                 ["value"] = "GD",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [4]
+            },
         },
-    }, -- [18]
+    },
     {
         id = 3014,
         ["class"] = "副本/奥达曼/{author}",
@@ -399,14 +399,14 @@ MessageClassifierDefaultRules = {
                 ["value"] = "奥达曼",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "ADM",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
         },
-    }, -- [19]
+    },
     {
         id = 3015,
         ["class"] = "副本/祖尔法拉克/{author}",
@@ -415,14 +415,14 @@ MessageClassifierDefaultRules = {
                 ["value"] = "祖尔",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "zul",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
         },
-    }, -- [20]
+    },
     {
         id = 3016,
         ["class"] = "副本/玛拉顿/{author}",
@@ -431,14 +431,14 @@ MessageClassifierDefaultRules = {
                 ["value"] = "玛拉顿",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "MLD",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
         },
-    }, -- [21]
+    },
     {
         id = 3017,
         ["class"] = "副本/阿塔哈卡神庙/{author}",
@@ -447,9 +447,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "神庙",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [22]
+    },
     {
         id = 3018,
         ["class"] = "副本/黑石深渊/{author}",
@@ -458,9 +458,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "深渊",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [23]
+    },
     {
         id = 3019,
         ["class"] = "副本/黑石塔/{author}",
@@ -469,9 +469,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "黑石塔",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [24]
+    },
     {
         id = 3020,
         ["class"] = "副本/黑石塔(下层)/{author}",
@@ -480,9 +480,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "黑下",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [25]
+    },
     {
         id = 3021,
         ["class"] = "副本/黑石塔(上层)/{author}",
@@ -491,9 +491,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "黑上",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [26]
+    },
     {
         id = 3022,
         ["class"] = "副本/厄运之槌/{author}",
@@ -502,9 +502,9 @@ MessageClassifierDefaultRules = {
                 ["value"] = "厄运",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [27]
+    },
     {
         id = 3023,
         ["class"] = "副本/斯坦索姆/{author}",
@@ -513,14 +513,14 @@ MessageClassifierDefaultRules = {
                 ["value"] = "斯坦索姆",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "STSM",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
         },
-    }, -- [28]
+    },
     {
         id = 3024,
         ["class"] = "副本/通灵学院/{author}",
@@ -529,14 +529,14 @@ MessageClassifierDefaultRules = {
                 ["value"] = "通灵",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "TL",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
         },
-    }, -- [29]
+    },
     {
         id = 3025,
         ["class"] = "副本/熔火之心/{author}",
@@ -545,14 +545,14 @@ MessageClassifierDefaultRules = {
                 ["value"] = "MC",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "熔火",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [2]
+            },
         },
-    }, -- [30]
+    },
     {
         id = 3026,
         ["class"] = "副本/奥妮克希亚的巢穴/{author}",
@@ -561,17 +561,17 @@ MessageClassifierDefaultRules = {
                 ["value"] = "黑龙",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
             {
                 ["value"] = "巢穴",
                 ["operator"] = "contain",
                 ["field"] = "content",
-            }, -- [3]
+            },
             {
                 ["value"] = "龙妹",
                 ["field"] = "content",
                 ["operator"] = "contain",
-            }, -- [1]
+            },
         },
-    }, -- [31]
+    },
 }
