@@ -118,10 +118,10 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 1001,
-        ["class"] = "收皮/{author}",
+        ["class"] = "商業/收皮/{author}",
         ["conditions"] = {
             {
-                ["value"] = "厚皮",
+                ["value"] = "皮",
                 ["operator"] = "contain",
                 ["field"] = "content",
             },
@@ -129,7 +129,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 1002,
-        ["class"] = "收布/{author}",
+        ["class"] = "商業/收布/{author}",
         ["conditions"] = {
             {
                 ["value"] = "絲綢",
@@ -137,17 +137,39 @@ MessageClassifierDefaultRules = {
                 ["operator"] = "contain",
             },
             {
-                ["value"] = "紋布",
+                ["value"] = "布",
                 ["operator"] = "contain",
                 ["field"] = "content",
             },
         },
     },
     {
+        id = 1102,
+        ["class"] = "商業/礦石/{author}",
+        ["conditions"] = {
+            {
+                ["value"] = "礦",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            },
+            {
+                ["value"] = "礦工",
+                ["field"] = "content",
+                ["operator"] = "not contain",
+            },
+        },
+        ["logic"] = "and",
+    },
+    {
         id = 1003,
         ["conditions"] = {
             {
-                ["value"] = "航空",
+                ["value"] = "航",
+                ["operator"] = "contain",
+                ["field"] = "content",
+            },
+            {
+                ["value"] = "飛",
                 ["operator"] = "contain",
                 ["field"] = "content",
             },
