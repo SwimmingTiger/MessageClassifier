@@ -12,6 +12,7 @@
 ## Author: SwimmingTiger (NGA: hu60)
 ## SavedVariables: MessageClassifierConfig
 ## X-Curse-Project-ID: 348875
+## X-WoWI-ID: 25436
 
 embeds.xml
 
