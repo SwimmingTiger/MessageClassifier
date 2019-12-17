@@ -5,4 +5,4 @@ echo "Packaging retail addon"
 bash ./script/BigWigsMods-release.sh
 
 echo "Packaging classic addon"
-bash ./script/BigWigsMods-release.sh -g 1.13.2
+bash ./script/BigWigsMods-release.sh -g 1.13.3
