@@ -1,8 +1,11 @@
 #!/bin/sh
 cd "$(dirname "$0")"
 
-echo "Packaging retail addon"
-bash ./script/BigWigsMods-release.sh
+echo "Packaging addon for retail"
+bash ./script/BigWigsMods-release.sh -g retail
 
-echo "Packaging classic addon"
-bash ./script/BigWigsMods-release.sh -g 1.13.4
+echo "Packaging addon for classic 60"
+bash ./script/BigWigsMods-release.sh -g classic
+
+echo "Packaging addon for classic TBC"
+bash ./script/BigWigsMods-release.sh -g bc
