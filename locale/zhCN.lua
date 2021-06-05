@@ -216,11 +216,11 @@ MessageClassifierDefaultRules = {
                 ["field"] = "content",
             },
         },
-        ["class"] = "副本/怒焰裂谷/{author}",
+        ["class"] = "副本/13-18 怒焰裂谷/{author}",
     },
     {
         id = 3002,
-        ["class"] = "副本/哀嚎洞穴/{author}",
+        ["class"] = "副本/17-24 哀嚎洞穴/{author}",
         ["conditions"] = {
             {
                 ["value"] = "哀嚎",
@@ -236,7 +236,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3003,
-        ["class"] = "副本/死亡矿井/{author}",
+        ["class"] = "副本/17-26 死亡矿井/{author}",
         ["conditions"] = {
             {
                 ["value"] = "矿井",
@@ -257,7 +257,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3004,
-        ["class"] = "副本/影牙城堡/{author}",
+        ["class"] = "副本/22-30 影牙城堡/{author}",
         ["conditions"] = {
             {
                 ["value"] = "影牙",
@@ -273,7 +273,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3105,
-        ["class"] = "副本/黑暗深渊/{author}",
+        ["class"] = "副本/24-32 黑暗深渊/{author}",
         ["conditions"] = {
             {
                 ["value"] = "黑暗",
@@ -284,7 +284,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3005,
-        ["class"] = "副本/监狱/{author}",
+        ["class"] = "副本/24-32 监狱/{author}",
         ["conditions"] = {
             {
                 ["value"] = "监狱",
@@ -295,7 +295,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3006,
-        ["class"] = "副本/诺莫瑞根/{author}",
+        ["class"] = "副本/29-38 诺莫瑞根/{author}",
         ["conditions"] = {
             {
                 ["value"] = "诺莫",
@@ -316,7 +316,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3007,
-        ["class"] = "副本/剃刀沼泽/{author}",
+        ["class"] = "副本/29-38 剃刀沼泽/{author}",
         ["conditions"] = {
             {
                 ["value"] = "剃刀",
@@ -337,7 +337,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3008,
-        ["class"] = "副本/血色修道院/{author}",
+        ["class"] = "副本/26-45 血色修道院/{author}",
         ["conditions"] = {
             {
                 ["value"] = "血色",
@@ -348,7 +348,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3009,
-        ["class"] = "副本/血色修道院：墓地/{author}",
+        ["class"] = "副本/26-36 血色修道院：墓地/{author}",
         ["conditions"] = {
             {
                 ["value"] = "墓地",
@@ -359,7 +359,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3010,
-        ["class"] = "副本/血色修道院：图书馆/{author}",
+        ["class"] = "副本/29-39 血色修道院：图书馆/{author}",
         ["conditions"] = {
             {
                 ["value"] = "图书馆",
@@ -370,7 +370,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3011,
-        ["class"] = "副本/血色修道院：军械库/{author}",
+        ["class"] = "副本/32-42 血色修道院：军械库/{author}",
         ["conditions"] = {
             {
                 ["value"] = "军械库",
@@ -381,7 +381,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3012,
-        ["class"] = "副本/血色修道院：大教堂/{author}",
+        ["class"] = "副本/35-45 血色修道院：大教堂/{author}",
         ["conditions"] = {
             {
                 ["value"] = "教堂",
@@ -392,7 +392,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3013,
-        ["class"] = "副本/剃刀高地/{author}",
+        ["class"] = "副本/37-46 剃刀高地/{author}",
         ["conditions"] = {
             {
                 ["value"] = "剃刀",
@@ -418,7 +418,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3014,
-        ["class"] = "副本/奥达曼/{author}",
+        ["class"] = "副本/41-51 奥达曼/{author}",
         ["conditions"] = {
             {
                 ["value"] = "奥达曼",
@@ -434,7 +434,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3015,
-        ["class"] = "副本/祖尔法拉克/{author}",
+        ["class"] = "副本/44-54 祖尔法拉克/{author}",
         ["conditions"] = {
             {
                 ["value"] = "祖尔法拉克",
@@ -450,7 +450,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3016,
-        ["class"] = "副本/玛拉顿/{author}",
+        ["class"] = "副本/46-55 玛拉顿/{author}",
         ["conditions"] = {
             {
                 ["value"] = "玛拉顿",
@@ -466,7 +466,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3017,
-        ["class"] = "副本/阿塔哈卡神庙/{author}",
+        ["class"] = "副本/50-60 阿塔哈卡神庙/{author}",
         ["conditions"] = {
             {
                 ["value"] = "神庙",
@@ -477,7 +477,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3018,
-        ["class"] = "副本/黑石深渊/{author}",
+        ["class"] = "副本/52-60 黑石深渊/{author}",
         ["conditions"] = {
             {
                 ["value"] = "深渊",
@@ -488,7 +488,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3019,
-        ["class"] = "副本/黑石塔/{author}",
+        ["class"] = "副本/55-60 黑石塔/{author}",
         ["conditions"] = {
             {
                 ["value"] = "黑石塔",
@@ -499,7 +499,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3020,
-        ["class"] = "副本/黑石塔(下层)/{author}",
+        ["class"] = "副本/55-60 黑石塔(下层)/{author}",
         ["conditions"] = {
             {
                 ["value"] = "黑下",
@@ -510,7 +510,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3021,
-        ["class"] = "副本/黑石塔(上层)/{author}",
+        ["class"] = "副本/55-60 黑石塔(上层)/{author}",
         ["conditions"] = {
             {
                 ["value"] = "黑上",
@@ -521,7 +521,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3022,
-        ["class"] = "副本/厄运之槌/{author}",
+        ["class"] = "副本/55-60 厄运之槌/{author}",
         ["conditions"] = {
             {
                 ["value"] = "厄运",
@@ -531,8 +531,41 @@ MessageClassifierDefaultRules = {
         },
     },
     {
+        id = 3122,
+        ["class"] = "副本/55-60 厄运之槌(东)/{author}",
+        ["conditions"] = {
+            {
+                ["value"] = "厄运东",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            },
+        },
+    },
+    {
+        id = 3222,
+        ["class"] = "副本/58-60 厄运之槌(西)/{author}",
+        ["conditions"] = {
+            {
+                ["value"] = "厄运东",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            },
+        },
+    },
+    {
+        id = 3322,
+        ["class"] = "副本/58-60 厄运之槌(北)/{author}",
+        ["conditions"] = {
+            {
+                ["value"] = "厄运东",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            },
+        },
+    },
+    {
         id = 3023,
-        ["class"] = "副本/斯坦索姆/{author}",
+        ["class"] = "副本/58-60 斯坦索姆/{author}",
         ["conditions"] = {
             {
                 ["value"] = "斯坦索姆",
@@ -548,7 +581,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3024,
-        ["class"] = "副本/通灵学院/{author}",
+        ["class"] = "副本/58-60 通灵学院/{author}",
         ["conditions"] = {
             {
                 ["value"] = "通灵",
@@ -564,7 +597,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3025,
-        ["class"] = "副本/熔火之心/{author}",
+        ["class"] = "副本/60 熔火之心/{author}",
         ["conditions"] = {
             {
                 ["value"] = "MC",
@@ -580,7 +613,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3026,
-        ["class"] = "副本/奥妮克希亚的巢穴/{author}",
+        ["class"] = "副本/60 奥妮克希亚的巢穴/{author}",
         ["conditions"] = {
             {
                 ["value"] = "奥妮克希亚",
@@ -606,7 +639,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3027,
-        ["class"] = "副本/黑翼之巢/{author}",
+        ["class"] = "副本/60 黑翼之巢/{author}",
         ["conditions"] = {
             {
                 ["value"] = "黑翼",
@@ -627,7 +660,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3028,
-        ["class"] = "副本/祖尔格拉布/{author}",
+        ["class"] = "副本/55-60 祖尔格拉布/{author}",
         ["conditions"] = {
             {
                 ["value"] = "祖尔格拉布",
@@ -653,7 +686,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3029,
-        ["class"] = "副本/安其拉神殿/{author}",
+        ["class"] = "副本/60 安其拉神殿/{author}",
         ["conditions"] = {
             {
                 ["value"] = "安其拉",
@@ -679,7 +712,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3030,
-        ["class"] = "副本/安其拉废墟/{author}",
+        ["class"] = "副本/60 安其拉废墟/{author}",
         ["conditions"] = {
             {
                 ["value"] = "废墟",

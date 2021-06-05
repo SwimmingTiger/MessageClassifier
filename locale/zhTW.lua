@@ -215,11 +215,11 @@ MessageClassifierDefaultRules = {
                 ["field"] = "content",
             },
         },
-        ["class"] = "地城/怒焰裂谷/{author}",
+        ["class"] = "地城/13-18 怒焰裂谷/{author}",
     },
     {
         id = 3002,
-        ["class"] = "地城/哀嚎洞穴/{author}",
+        ["class"] = "地城/17-24 哀嚎洞穴/{author}",
         ["conditions"] = {
             {
                 ["value"] = "哀嚎",
@@ -235,7 +235,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3003,
-        ["class"] = "地城/死亡礦坑/{author}",
+        ["class"] = "地城/17-26 死亡礦坑/{author}",
         ["conditions"] = {
             {
                 ["value"] = "礦坑",
@@ -256,7 +256,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3004,
-        ["class"] = "地城/影牙城堡/{author}",
+        ["class"] = "地城/22-30 影牙城堡/{author}",
         ["conditions"] = {
             {
                 ["value"] = "影牙",
@@ -272,7 +272,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3105,
-        ["class"] = "地城/黑澗深淵/{author}",
+        ["class"] = "地城/24-32 黑澗深淵/{author}",
         ["conditions"] = {
             {
                 ["value"] = "黑澗",
@@ -283,7 +283,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3005,
-        ["class"] = "地城/監獄/{author}",
+        ["class"] = "地城/24-32 監獄/{author}",
         ["conditions"] = {
             {
                 ["value"] = "監獄",
@@ -294,7 +294,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3006,
-        ["class"] = "地城/諾姆瑞根/{author}",
+        ["class"] = "地城/29-38 諾姆瑞根/{author}",
         ["conditions"] = {
             {
                 ["value"] = "諾姆",
@@ -315,7 +315,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3007,
-        ["class"] = "地城/剃刀沼澤/{author}",
+        ["class"] = "地城/29-38 剃刀沼澤/{author}",
         ["conditions"] = {
             {
                 ["value"] = "剃刀",
@@ -336,7 +336,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3008,
-        ["class"] = "地城/血色修道院/{author}",
+        ["class"] = "地城/26-45 血色修道院/{author}",
         ["conditions"] = {
             {
                 ["value"] = "血色",
@@ -347,7 +347,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3009,
-        ["class"] = "地城/血色修道院：墓地/{author}",
+        ["class"] = "地城/26-36 血色修道院：墓地/{author}",
         ["conditions"] = {
             {
                 ["value"] = "墓地",
@@ -358,7 +358,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3010,
-        ["class"] = "地城/血色修道院：圖書館/{author}",
+        ["class"] = "地城/29-39 血色修道院：圖書館/{author}",
         ["conditions"] = {
             {
                 ["value"] = "圖書館",
@@ -369,7 +369,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3011,
-        ["class"] = "地城/血色修道院：軍械庫/{author}",
+        ["class"] = "地城/32-42 血色修道院：軍械庫/{author}",
         ["conditions"] = {
             {
                 ["value"] = "軍械庫",
@@ -380,7 +380,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3012,
-        ["class"] = "地城/血色修道院：大教堂/{author}",
+        ["class"] = "地城/35-45 血色修道院：大教堂/{author}",
         ["conditions"] = {
             {
                 ["value"] = "教堂",
@@ -391,7 +391,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3013,
-        ["class"] = "地城/剃刀高地/{author}",
+        ["class"] = "地城/37-46 剃刀高地/{author}",
         ["conditions"] = {
             {
                 ["value"] = "剃刀",
@@ -417,7 +417,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3014,
-        ["class"] = "地城/奧達曼/{author}",
+        ["class"] = "地城/41-51 奧達曼/{author}",
         ["conditions"] = {
             {
                 ["value"] = "奧達曼",
@@ -433,7 +433,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3015,
-        ["class"] = "地城/祖爾法拉克/{author}",
+        ["class"] = "地城/44-54 祖爾法拉克/{author}",
         ["conditions"] = {
             {
                 ["value"] = "祖爾法拉克",
@@ -449,7 +449,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3016,
-        ["class"] = "地城/瑪拉頓/{author}",
+        ["class"] = "地城/46-55 瑪拉頓/{author}",
         ["conditions"] = {
             {
                 ["value"] = "瑪拉頓",
@@ -465,7 +465,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3017,
-        ["class"] = "地城/阿塔哈卡神廟/{author}",
+        ["class"] = "地城/50-60 阿塔哈卡神廟/{author}",
         ["conditions"] = {
             {
                 ["value"] = "神廟",
@@ -476,7 +476,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3018,
-        ["class"] = "地城/黑石深淵/{author}",
+        ["class"] = "地城/52-60 黑石深淵/{author}",
         ["conditions"] = {
             {
                 ["value"] = "深淵",
@@ -487,7 +487,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3019,
-        ["class"] = "地城/黑石塔/{author}",
+        ["class"] = "地城/55-60 黑石塔/{author}",
         ["conditions"] = {
             {
                 ["value"] = "黑石塔",
@@ -498,7 +498,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3020,
-        ["class"] = "地城/黑石塔(下層)/{author}",
+        ["class"] = "地城/55-60 黑石塔(下層)/{author}",
         ["conditions"] = {
             {
                 ["value"] = "黑下",
@@ -509,7 +509,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3021,
-        ["class"] = "地城/黑石塔(上層)/{author}",
+        ["class"] = "地城/55-60 黑石塔(上層)/{author}",
         ["conditions"] = {
             {
                 ["value"] = "黑上",
@@ -520,7 +520,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3022,
-        ["class"] = "地城/厄運之槌/{author}",
+        ["class"] = "地城/55-60 厄運之槌/{author}",
         ["conditions"] = {
             {
                 ["value"] = "厄運",
@@ -530,8 +530,41 @@ MessageClassifierDefaultRules = {
         },
     },
     {
+        id = 3122,
+        ["class"] = "地城/55-60 厄運之槌(東)/{author}",
+        ["conditions"] = {
+            {
+                ["value"] = "厄運東",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            },
+        },
+    },
+    {
+        id = 3222,
+        ["class"] = "地城/58-60 厄運之槌(西)/{author}",
+        ["conditions"] = {
+            {
+                ["value"] = "厄運西",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            },
+        },
+    },
+    {
+        id = 3322,
+        ["class"] = "地城/58-60 厄運之槌(北)/{author}",
+        ["conditions"] = {
+            {
+                ["value"] = "厄運北",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            },
+        },
+    },
+    {
         id = 3023,
-        ["class"] = "地城/斯坦索姆/{author}",
+        ["class"] = "地城/58-60 斯坦索姆/{author}",
         ["conditions"] = {
             {
                 ["value"] = "斯坦索姆",
@@ -547,7 +580,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3024,
-        ["class"] = "地城/通靈學院/{author}",
+        ["class"] = "地城/58-60 通靈學院/{author}",
         ["conditions"] = {
             {
                 ["value"] = "通靈",
@@ -563,7 +596,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3025,
-        ["class"] = "地城/熔火之心/{author}",
+        ["class"] = "地城/60 熔火之心/{author}",
         ["conditions"] = {
             {
                 ["value"] = "MC",
@@ -579,7 +612,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3026,
-        ["class"] = "地城/奧妮克希亞的巢穴/{author}",
+        ["class"] = "地城/60 奧妮克希亞的巢穴/{author}",
         ["conditions"] = {
             {
                 ["value"] = "奧妮克希亞",
@@ -605,7 +638,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3027,
-        ["class"] = "副本/黑翼之巢/{author}",
+        ["class"] = "副本/60 黑翼之巢/{author}",
         ["conditions"] = {
             {
                 ["value"] = "黑翼",
@@ -626,7 +659,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3028,
-        ["class"] = "副本/祖爾格拉布/{author}",
+        ["class"] = "副本/55-60 祖爾格拉布/{author}",
         ["conditions"] = {
             {
                 ["value"] = "祖爾格拉布",
@@ -652,7 +685,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3029,
-        ["class"] = "副本/安其拉神殿/{author}",
+        ["class"] = "副本/60 安其拉神殿/{author}",
         ["conditions"] = {
             {
                 ["value"] = "安其拉",
@@ -678,7 +711,7 @@ MessageClassifierDefaultRules = {
     },
     {
         id = 3030,
-        ["class"] = "副本/安其拉廢墟/{author}",
+        ["class"] = "副本/60 安其拉廢墟/{author}",
         ["conditions"] = {
             {
                 ["value"] = "廢墟",
