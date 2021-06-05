@@ -418,6 +418,12 @@ end
 
 function MessageClassifierConfigFrame:addRuleSet()
     local index = #MessageClassifierConfig.classificationRules + 1
+    local defaultClass = "xxx/{author}"
+    if self.ruleSetsFilter ~= "" then
+        defaultClass = self.ruleSetsFilter
+    elseif self.lastUpdatedClass ~= "" then
+        defaultClass = self.lastUpdatedClass
+    end
     MessageClassifierConfig.classificationRules[index] = {
         conditions = {
             {
@@ -426,7 +432,7 @@ function MessageClassifierConfigFrame:addRuleSet()
                 value = "xxx",
             },
         },
-        class = self.ruleSetsFilter ~= "" and self.ruleSetsFilter or "xxx/{author}",
+        class = defaultClass,
         tmp = true,
         enabled = false,
     }
