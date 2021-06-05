@@ -185,6 +185,17 @@ MessageClassifierDefaultRules = {
         },
     },
     {
+        id = 2003,
+        ["class"] = "World Boss/{author}",
+        ["conditions"] = {
+            {
+                ["value"] = "world%s+boss",
+                ["field"] = "content",
+                ["operator"] = "match",
+            },
+        },
+    },
+    {
         id = 3001,
         ["conditions"] = {
             {

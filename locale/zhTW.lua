@@ -202,6 +202,17 @@ MessageClassifierDefaultRules = {
         },
     },
     {
+        id = 2003,
+        ["class"] = "世界BOSS/{author}",
+        ["conditions"] = {
+            {
+                ["value"] = "世界BOSS",
+                ["field"] = "content",
+                ["operator"] = "contain",
+            },
+        },
+    },
+    {
         id = 3001,
         ["conditions"] = {
             {
