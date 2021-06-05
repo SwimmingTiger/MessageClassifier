@@ -83,6 +83,8 @@ L["OPTION_RULE_SETS"] = "自訂規則"
 L["OPTION_RULE_SETS_TITLE"] = "訊息分類規則"
 L["OPTION_SAVE"] = "儲存"
 L["OPTION_SELECT_ALL"] = "全選"
+L["OPTION_RULE_SETS_FILTER"] = "按分類篩選"
+L["OPTION_RULE_SETS_FILTER_ALL"] = "顯示所有分類"
 
 -- Rule Fields
 L["author"] = "作者"

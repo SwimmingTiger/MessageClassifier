@@ -52,6 +52,8 @@ L["OPTION_CONDITION_OPERATOR"] = "Operator"
 L["OPTION_CONDITION_VALUE"] = "Value"
 L["OPTION_COND_CASESENSITIVE"] = "Case Sensitive"
 L["OPTION_SELECT_ALL"] = "Select All"
+L["OPTION_RULE_SETS_FILTER"] = "Filter by Class"
+L["OPTION_RULE_SETS_FILTER_ALL"] = "Show All Classes"
 
 -- Rule Fields
 L["author"] = true

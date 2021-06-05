@@ -142,6 +142,9 @@ end
 
 MessageClassifierConfigFrame = CreateFrame("Frame", "MessageClassifierConfigFrame", UIParent)
 MessageClassifierConfigFrame.ruleEditCache = {}
+MessageClassifierConfigFrame.ruleSetsFilter = ""
+MessageClassifierConfigFrame.lastRuleSetsFilterValues = {}
+MessageClassifierConfigFrame.lastUpdatedClass = ""
 
 function MessageClassifierConfigFrame:loadConfig()
     if not MessageClassifierConfig then MessageClassifierConfig = {} end
@@ -207,6 +210,39 @@ function MessageClassifierConfigFrame:loadConfig()
                 order = 5,
                 type = "header",
                 name = L["OPTION_RULE_SETS_TITLE"],
+            },
+            ruleSetsFilter = {
+                order = 9,
+                type = "select",
+                width = "full",
+                name = L["OPTION_RULE_SETS_FILTER"],
+                values = function()
+                    local classFilter = {
+                        [""] = string.format("|cff569cd6%s|r", L["OPTION_RULE_SETS_FILTER_ALL"]),
+                    }
+                    for _,v in pairs(MessageClassifierConfig.classificationRules) do
+                        classFilter[v.class] = localizeClassPathWithColor(v.class)
+                    end
+                    for _,v in pairs(MessageClassifierDefaultRules) do
+                        classFilter[v.class] = localizeClassPathWithColor(v.class)
+                    end
+                    self.lastRuleSetsFilterValues = classFilter
+                    return classFilter
+                end,
+                get = function(info)
+                    -- Automatically go to the edited class after editing it
+                    if self.ruleSetsFilter ~= ""
+                        and not self.lastRuleSetsFilterValues[self.ruleSetsFilter]
+                        and self.lastUpdatedClass ~= ""
+                        and self.lastRuleSetsFilterValues[self.lastUpdatedClass]
+                    then
+                        self.ruleSetsFilter = self.lastUpdatedClass
+                    end
+                    return self.ruleSetsFilter
+                end,
+                set = function(info, val)
+                    self.ruleSetsFilter = val
+                end
             },
             ruleSets = {
                 order = 10,
@@ -390,7 +426,7 @@ function MessageClassifierConfigFrame:addRuleSet()
                 value = "xxx",
             },
         },
-        class = "xxx/{author}",
+        class = self.ruleSetsFilter ~= "" and self.ruleSetsFilter or "xxx/{author}",
         tmp = true,
         enabled = false,
     }
@@ -419,6 +455,9 @@ function MessageClassifierConfigFrame:addRuleSetToView(index, ruleSet)
         inline = true,
         order = index,
         name = "",
+        hidden = function()
+            return self.ruleSetsFilter ~= "" and self.ruleSetsFilter ~= ruleSet.class
+        end,
         args = {
             enabled = {
                 order = 1,
@@ -594,6 +633,7 @@ function MessageClassifierConfigFrame:editRuleSet(index)
                 end,
                 set = function(info, val)
                     cache.class = delocalizeClassPath(val)
+                    self.lastUpdatedClass = cache.class
                 end,
             },
             bottomLine = {
@@ -762,6 +802,9 @@ function MessageClassifierConfigFrame:addDefaultRuleSetToView(index, ruleSet)
         inline = true,
         order = index,
         name = "",
+        hidden = function()
+            return self.ruleSetsFilter ~= "" and self.ruleSetsFilter ~= ruleSet.class
+        end,
         args = {
             enabled = {
                 order = 1,

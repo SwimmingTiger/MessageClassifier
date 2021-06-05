@@ -52,6 +52,8 @@ L["OPTION_CONDITION_OPERATOR"] = "操作"
 L["OPTION_CONDITION_VALUE"] = "值"
 L["OPTION_COND_CASESENSITIVE"] = "区分大小写"
 L["OPTION_SELECT_ALL"] = "全选"
+L["OPTION_RULE_SETS_FILTER"] = "按分类筛选"
+L["OPTION_RULE_SETS_FILTER_ALL"] = "显示所有分类"
 
 
 -- Localized class variable
