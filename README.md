@@ -6,6 +6,8 @@ At the same time, classify and browse messages with complex and specific rules.
 Download [![Build Status](https://travis-ci.com/SwimmingTiger/MessageClassifier.svg)](https://travis-ci.com/SwimmingTiger/MessageClassifier)
 -----------------
 * [CurseForge](https://www.curseforge.com/wow/addons/messageclassifier/files)
+* [WoW Interface](https://www.wowinterface.com/downloads/info25436-MessageClassifier.html)
+* [NGA](https://bbs.nga.cn/read.php?tid=18963415)
 
 Features
 -----------------
