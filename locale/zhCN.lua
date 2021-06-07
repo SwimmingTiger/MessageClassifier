@@ -580,7 +580,7 @@ MessageClassifierDefaultRules = {
         },
     },
     {
-        id = 3105,
+        id = 3005,
         ["class"] = "副本/24-32 黑暗深渊/{author}",
         ["conditions"] = {
             {
@@ -601,7 +601,7 @@ MessageClassifierDefaultRules = {
         },
     },
     {
-        id = 3205,
+        id = 3105,
         ["class"] = "副本/24-32 黑暗深渊/{author}",
         ["logic"] = "and",
         ["conditions"] = {
@@ -618,7 +618,7 @@ MessageClassifierDefaultRules = {
         },
     },
     {
-        id = 3305,
+        id = 3205,
         ["class"] = "副本/24-32 黑暗深渊/{author}",
         ["logic"] = "and",
         ["conditions"] = {
@@ -635,7 +635,7 @@ MessageClassifierDefaultRules = {
         },
     },
     {
-        id = 3005,
+        id = 3305,
         ["class"] = "副本/24-32 监狱/{author}",
         ["logic"] = "and",
         ["conditions"] = {
@@ -667,7 +667,7 @@ MessageClassifierDefaultRules = {
         },
     },
     {
-        id = 3105,
+        id = 3405,
         ["class"] = "副本/24-32 监狱/{author}",
         ["logic"] = "and",
         ["conditions"] = {

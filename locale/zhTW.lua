@@ -579,7 +579,7 @@ MessageClassifierDefaultRules = {
         },
     },
     {
-        id = 3105,
+        id = 3005,
         ["class"] = "地城/24-32 黑澗深淵/{author}",
         ["conditions"] = {
             {
@@ -600,7 +600,7 @@ MessageClassifierDefaultRules = {
         },
     },
     {
-        id = 3205,
+        id = 3105,
         ["class"] = "地城/24-32 黑澗深淵/{author}",
         ["logic"] = "and",
         ["conditions"] = {
@@ -617,7 +617,7 @@ MessageClassifierDefaultRules = {
         },
     },
     {
-        id = 3305,
+        id = 3205,
         ["class"] = "地城/24-32 黑澗深淵/{author}",
         ["logic"] = "and",
         ["conditions"] = {
@@ -634,7 +634,7 @@ MessageClassifierDefaultRules = {
         },
     },
     {
-        id = 3005,
+        id = 3305,
         ["class"] = "地城/24-32 監獄/{author}",
         ["logic"] = "and",
         ["conditions"] = {
@@ -666,7 +666,7 @@ MessageClassifierDefaultRules = {
         },
     },
     {
-        id = 3105,
+        id = 3405,
         ["class"] = "地城/24-32 監獄/{author}",
         ["logic"] = "and",
         ["conditions"] = {
