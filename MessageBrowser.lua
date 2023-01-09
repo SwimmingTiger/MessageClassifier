@@ -147,7 +147,7 @@ local function getChannelColor(channelID)
 end
 
 local function formatMsg(msg)
-    local text = string.format("|cffffa900%s|r |Hchannel:channel:%s|h[%s]|h [|Hplayer:%s:-1|h%s|h] %s", date("%H:%M:%S", msg.updateTime), msg.channelID, shortChannelName(msg.channel), msg.authorFullName, msg.author, msg.content)
+    local text = string.format("|cffffa900%s|r |Hchannel:channel:%s|h[%s]|h [|Hplayer:%s:0|h%s|h] %s", date("%H:%M:%S", msg.updateTime), msg.channelID, shortChannelName(msg.channel), msg.authorFullName, msg.author, msg.content)
     if msg.count > 1 then
         text = getColoredCount(msg.count)..text
     end
