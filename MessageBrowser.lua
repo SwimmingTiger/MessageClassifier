@@ -1,6 +1,8 @@
 local ADDON_NAME = ...
 local L = LibStub("AceLocale-3.0"):GetLocale(ADDON_NAME)
 local AceGUI = LibStub("AceGUI-3.0")
+local LibDataBroker = LibStub("LibDataBroker-1.1")
+local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 MessageClassifierBrowser = AceGUI:Create("Frame")
 MessageClassifierBrowser.messages = {}
@@ -167,6 +169,145 @@ local function openConfigCategory()
         InterfaceOptionsFrame_OpenToCategory(categoryFrame)
         InterfaceOptionsFrame_OpenToCategory(categoryFrame)
     end
+end
+
+local function toggleBrowser()
+    if MessageClassifierBrowser:IsShown() then
+        MessageClassifierBrowser:Hide()
+    else
+        MessageClassifierBrowser:Show()
+    end
+end
+
+local function applyBrokerButtonPosition(button)
+    local minimapConfig = MessageClassifierConfig and MessageClassifierConfig.minimap
+    local freePosition = minimapConfig and minimapConfig.freePosition
+    if not button or not freePosition then
+        return
+    end
+
+    button:ClearAllPoints()
+    button:SetPoint("CENTER", UIParent, "BOTTOMLEFT", freePosition.x, freePosition.y)
+end
+
+local function scheduleBrokerButtonPositionApply(button)
+    if not button then
+        return
+    end
+
+    if C_Timer and C_Timer.After then
+        C_Timer.After(0, function()
+            applyBrokerButtonPosition(button)
+        end)
+        return
+    end
+
+    local frame = CreateFrame("Frame")
+    frame:SetScript("OnUpdate", function(self)
+        applyBrokerButtonPosition(button)
+        self:SetScript("OnUpdate", nil)
+    end)
+end
+
+local function startFreeDrag(button)
+    local minimapConfig = MessageClassifierConfig and MessageClassifierConfig.minimap
+    if not minimapConfig then
+        return
+    end
+
+    button.freeDragging = true
+    button:LockHighlight()
+    button.isMouseDown = true
+    if button.icon and button.icon.UpdateCoord then
+        button.icon:UpdateCoord()
+    end
+    button:SetScript("OnUpdate", function(self)
+        local cursorX, cursorY = GetCursorPosition()
+        local scale = UIParent:GetEffectiveScale()
+        local posX = cursorX / scale
+        local posY = cursorY / scale
+        minimapConfig.freePosition = {
+            x = posX,
+            y = posY,
+        }
+        self:ClearAllPoints()
+        self:SetPoint("CENTER", UIParent, "BOTTOMLEFT", posX, posY)
+    end)
+end
+
+local function stopFreeDrag(button)
+    button.freeDragging = nil
+    button:UnlockHighlight()
+    button.isMouseDown = false
+    if button.icon and button.icon.UpdateCoord then
+        button.icon:UpdateCoord()
+    end
+    button:SetScript("OnUpdate", nil)
+    applyBrokerButtonPosition(button)
+end
+
+function MessageClassifierBrowser:UpdateBrokerVisibility()
+    if not self.brokerInitialized then
+        return
+    end
+
+    if MessageClassifierConfig.minimap.hidden then
+        LibDBIcon:Hide(ADDON_NAME)
+    else
+        LibDBIcon:Show(ADDON_NAME)
+        if self.brokerButton then
+            applyBrokerButtonPosition(self.brokerButton)
+            scheduleBrokerButtonPositionApply(self.brokerButton)
+        end
+    end
+end
+
+function MessageClassifierBrowser:ResetBrokerPosition()
+    if not MessageClassifierConfig.minimap then
+        MessageClassifierConfig.minimap = {}
+    end
+
+    MessageClassifierConfig.minimap.minimapPos = 135
+    MessageClassifierConfig.minimap.freePosition = nil
+
+    if not self.brokerInitialized then
+        return
+    end
+
+    LibDBIcon:Refresh(ADDON_NAME, MessageClassifierConfig.minimap)
+    if self.brokerButton then
+        self:BindBrokerButtonDragHandlers()
+        scheduleBrokerButtonPositionApply(self.brokerButton)
+    end
+end
+
+function MessageClassifierBrowser:BindBrokerButtonDragHandlers()
+    if not self.brokerButton then
+        return
+    end
+
+    local defaultOnDragStart = self.brokerButton:GetScript("OnDragStart")
+    local defaultOnDragStop = self.brokerButton:GetScript("OnDragStop")
+
+    self.brokerButton:SetScript("OnDragStart", function(button)
+        if IsShiftKeyDown() then
+            startFreeDrag(button)
+            return
+        end
+        MessageClassifierConfig.minimap.freePosition = nil
+        if defaultOnDragStart then
+            defaultOnDragStart(button)
+        end
+    end)
+    self.brokerButton:SetScript("OnDragStop", function(button)
+        if button.freeDragging then
+            stopFreeDrag(button)
+            return
+        end
+        if defaultOnDragStop then
+            defaultOnDragStop(button)
+        end
+    end)
 end
 
 local function buildPlayerLink(msg)
@@ -648,71 +789,58 @@ function MessageClassifierBrowser:CreateView()
 
     SLASH_MSGCF1 = "/msgcf"
     SlashCmdList["MSGCF"] = function(...)
-        if MessageClassifierBrowser:IsShown() then
-            MessageClassifierBrowser:Hide()
-        else
-            MessageClassifierBrowser:Show()
-        end
+        toggleBrowser()
     end
 end
 
 MessageClassifierBrowser:CreateView()
 
---minimap icon
-MessageClassifierBrowser.icon = CreateFrame("Button", "MessageClassifierBrowserIcon", Minimap)
-function MessageClassifierBrowser.icon:CreateView()
-    self:SetClampedToScreen(true)
-    self:SetMovable(true)
-    self:EnableMouse(true)
-    self:RegisterForDrag("LeftButton")
-    self:RegisterForClicks("LeftButtonUp")
-    self:SetScript("OnDragStart", function(self)
-        if IsShiftKeyDown() then
-            self:StartMoving()
-        end
-    end)
-    self:SetScript("OnDragStop", function(self)
-        self:StopMovingOrSizing()
-    end)
-    self:SetScript("OnClick", function()
-        if MessageClassifierBrowser:IsShown() then
-            MessageClassifierBrowser:Hide()
-        else
-            MessageClassifierBrowser:Show()
-        end
-    end)
+function MessageClassifierBrowser:InitializeBroker()
+    if self.brokerInitialized then
+        return
+    end
 
-    self:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
-        GameTooltip:SetText(L["CONFIG_PAGE_TITLE"])
-        GameTooltip:AddDoubleLine(L["Left-Click"], L["BROWSER_TITLE"], 1, 1, 1, 1, 1, 1)
-        GameTooltip:AddDoubleLine(L["Shift-Click"], L["MOVE_BUTTON"], 1, 1, 1, 1, 1, 1)
-        GameTooltip:Show()
-    end)
-    
-    self:SetScript("OnLeave", function()
-        GameTooltip:Hide()
-    end)
-    
-    self:SetFrameStrata('LOW')
-    self:SetWidth(31)
-    self:SetHeight(31)
-    self:SetFrameLevel(9)
-    self:SetHighlightTexture('Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight')
-    self:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -5, 0)
-    
-    self.overlay = self:CreateTexture(nil, 'OVERLAY')
-    self.overlay:SetWidth(53)
-    self.overlay:SetHeight(53)
-    self.overlay:SetTexture('Interface\\Minimap\\MiniMap-TrackingBorder')
-    self.overlay:SetPoint('TOPLEFT', 0,0)
-    
-    self.icon = self:CreateTexture(nil, 'BACKGROUND')
-    self.icon:SetWidth(15)
-    self.icon:SetHeight(15)
-    self.icon:SetTexture("Interface\\Addons\\"..ADDON_NAME.."\\img\\logo")
-    self.icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-    self.icon:SetPoint('CENTER',1,1)
-    
+    if not MessageClassifierConfig.minimap then
+        MessageClassifierConfig.minimap = {
+            hidden = false,
+            minimapPos = 135,
+            freePosition = nil,
+        }
+    end
+
+    self.broker = LibDataBroker:GetDataObjectByName(ADDON_NAME) or LibDataBroker:NewDataObject(ADDON_NAME, {
+        type = "launcher",
+        icon = "Interface\\Addons\\"..ADDON_NAME.."\\img\\logo",
+        label = L["CONFIG_PAGE_TITLE"],
+        text = L["CONFIG_PAGE_TITLE"],
+        OnClick = function(_, button)
+            if button == "RightButton" then
+                openConfigCategory()
+                return
+            end
+            toggleBrowser()
+        end,
+        OnTooltipShow = function(tooltip)
+            tooltip:AddLine(L["CONFIG_PAGE_TITLE"])
+            tooltip:AddDoubleLine(L["Left-Click"], L["BROWSER_TITLE"], 1, 1, 1, 1, 1, 1)
+            tooltip:AddDoubleLine(L["Right-Click"], L["BROWSER_SETTING"], 1, 1, 1, 1, 1, 1)
+            tooltip:AddDoubleLine(L["Drag"], L["MOVE_BUTTON"], 1, 1, 1, 1, 1, 1)
+            tooltip:AddDoubleLine(L["Shift-Drag"], L["FREE_MOVE"], 1, 1, 1, 1, 1, 1)
+        end,
+    })
+
+    LibDBIcon:Register(ADDON_NAME, self.broker, MessageClassifierConfig.minimap)
+    self.brokerButton = LibDBIcon:GetMinimapButton(ADDON_NAME)
+    if self.brokerButton then
+        self.brokerButton:SetClampedToScreen(true)
+        self:BindBrokerButtonDragHandlers()
+        self.brokerButton:HookScript("OnShow", function(button)
+            applyBrokerButtonPosition(button)
+        end)
+        applyBrokerButtonPosition(self.brokerButton)
+        scheduleBrokerButtonPositionApply(self.brokerButton)
+    end
+
+    self.brokerInitialized = true
+    self:UpdateBrokerVisibility()
 end
-MessageClassifierBrowser.icon:CreateView()

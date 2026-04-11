@@ -12,9 +12,12 @@ L["BROWSER_SEARCH"] = "Поиск"
 L["BROWSER_SETTING"] = "Настройки"
 L["BROWSER_STATUS_BAR"] = "Все сообщения %d, уникальные %d, дубликаты %d, коэффициент дублирования %0.2f%%"
 L["BROWSER_TITLE"] = "Браузер сообщений"
+L["Drag"] = "Перетаскивание"
 L["Left-Click"] = "ЛКМ"
+L["Right-Click"] = "ПКМ"
+L["Shift-Drag"] = "Shift-перетаскивание"
+L["FREE_MOVE"] = "Свободное перемещение"
 L["MOVE_BUTTON"] = "Перемещать кнопку"
-L["Shift-Click"] = "Shift-Клик"
 
 -- Channels
 --[[Translation missing --]]
@@ -84,6 +87,8 @@ L["RESET_TIPS"] = "Дедупликация сообщений общего ча
 
 -- Options
 L["CONFIG_PAGE_TITLE"] = "Дедупликация сообщений"
+L["OPTION_SHOW_MINIMAP_BUTTON"] = "Показывать кнопку у миникарты"
+L["OPTION_RESET_MINIMAP_BUTTON_POSITION"] = "Сбросить позицию"
 L["OPTION_ADD"] = "Добавить"
 L["OPTION_CANCEL"] = "Канал"
 L["OPTION_CLASS"] = "Затем добавьте к этому классу"

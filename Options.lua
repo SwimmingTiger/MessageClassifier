@@ -66,6 +66,11 @@ local defaultConfig = {
     ["classificationRules"] = {},
     ["enabledDefaultRules"] = {},
     ["defRulHideFromChatWindow"] = {},
+    ["minimap"] = {
+        hidden = false,
+        minimapPos = 135,
+        freePosition = nil,
+    },
 }
 
 local classPathLocales = {
@@ -206,8 +211,41 @@ function MessageClassifierConfigFrame:loadConfig()
                     MessageClassifierBrowser:Show()
                 end
             },
-            ruleSetsTitle = {
+            minimapButtonControls = {
                 order = 5,
+                type = "group",
+                inline = true,
+                width = "full",
+                name = "",
+                args = {
+                    showMinimapButton = {
+                        order = 1,
+                        type = "toggle",
+                        name = L["OPTION_SHOW_MINIMAP_BUTTON"],
+                        get = function(info)
+                            return MessageClassifierConfig.minimap.hidden ~= true
+                        end,
+                        set = function(info, val)
+                            MessageClassifierConfig.minimap.hidden = not val
+                            if MessageClassifierBrowser and MessageClassifierBrowser.UpdateBrokerVisibility then
+                                MessageClassifierBrowser:UpdateBrokerVisibility()
+                            end
+                        end,
+                    },
+                    resetMinimapButtonPosition = {
+                        order = 2,
+                        type = "execute",
+                        name = L["OPTION_RESET_MINIMAP_BUTTON_POSITION"],
+                        func = function(info)
+                            if MessageClassifierBrowser and MessageClassifierBrowser.ResetBrokerPosition then
+                                MessageClassifierBrowser:ResetBrokerPosition()
+                            end
+                        end,
+                    },
+                },
+            },
+            ruleSetsTitle = {
+                order = 6,
                 type = "header",
                 name = L["OPTION_RULE_SETS_TITLE"],
             },
@@ -408,6 +446,9 @@ function MessageClassifierConfigFrame:loadConfig()
 
     self.registeredOptionsTable = AceConfigRegistry:RegisterOptionsTable(ADDON_NAME, self.configTable)
     self.blizOptions, self.blizOptionsCategoryID = AceConfigDialog:AddToBlizOptions(ADDON_NAME, L["CONFIG_PAGE_TITLE"])
+    if MessageClassifierBrowser and MessageClassifierBrowser.InitializeBroker then
+        MessageClassifierBrowser:InitializeBroker()
+    end
 end
 
 function MessageClassifierConfigFrame:updateRuleSetView()
