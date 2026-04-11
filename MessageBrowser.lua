@@ -132,6 +132,8 @@ local function shortChannelName(channel)
     for k,v in pairs(CHANNEL_NAME_REPLACE) do
         channel = channel:gsub(k, v)
     end
+    -- Remove channel number for numbered channels, e.g. "2. Trade" -> "Trade"
+    channel = channel:gsub("%d+%.%s*", "")
     return channel
 end
 
@@ -167,8 +169,31 @@ local function openConfigCategory()
     end
 end
 
+local function buildPlayerLink(msg)
+    local displayText = string.format("[%s]", msg.author)
+    if GetPlayerLink then
+        return GetPlayerLink(msg.authorFullName, displayText)
+    end
+    return string.format("[|Hplayer:%s:0|h%s|h]", msg.authorFullName, msg.author)
+end
+
+local function buildChannelLink(msg)
+    if ChatFrameUtil and ChatFrameUtil.GetColoredChatName then
+        if type(msg.channelID) == 'number' then
+            return shortChannelName(ChatFrameUtil.GetColoredChatName("CHANNEL", msg.channelID))
+        end
+        if msg.channelID == "WHISPER" then
+            return ChatFrameUtil.GetColoredChatName("WHISPER", msg.authorFullName)
+        end
+        if ChatTypeInfo[msg.channelID] then
+            return shortChannelName(ChatFrameUtil.GetColoredChatName(msg.channelID, msg.channelID))
+        end
+    end
+    return string.format("|Hchannel:channel:%s|h[%s]|h", msg.channelID, shortChannelName(msg.channel))
+end
+
 local function formatMsg(msg)
-    local text = string.format("|cffffa900%s|r |Hchannel:channel:%s|h[%s]|h [|Hplayer:%s:0|h%s|h] %s", date("%H:%M:%S", msg.updateTime), msg.channelID, shortChannelName(msg.channel), msg.authorFullName, msg.author, msg.content)
+    local text = string.format("|cffffa900%s|r %s %s %s", date("%H:%M:%S", msg.updateTime), buildChannelLink(msg), buildPlayerLink(msg), msg.content)
     if msg.count > 1 then
         text = getColoredCount(msg.count)..text
     end
@@ -561,15 +586,19 @@ function MessageClassifierBrowser:CreateView()
     local linkHandle = {
         ['channel:channel:YELL'] = function(_, _, _, _)
             sendMessageTo('yell')
+        end,
+        ['channel:YELL'] = function(_, _, _, _)
+            sendMessageTo('yell')
         end
     }
     local function defaultHyperlinkHandler(frame, link, text, button)
+        local chatFrame = SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME or frame
         if SetItemRef then
-            SetItemRef(link, text, button, frame)
+            SetItemRef(link, text, button, chatFrame)
             return
         end
         if ChatFrame_OnHyperlinkShow then
-            ChatFrame_OnHyperlinkShow(frame, link, text, button)
+            ChatFrame_OnHyperlinkShow(chatFrame, link, text, button)
         end
     end
     function self.msgView:clickHyperlink(link, ...)
