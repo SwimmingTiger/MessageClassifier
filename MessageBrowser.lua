@@ -146,6 +146,27 @@ local function getChannelColor(channelID)
     return ChatTypeInfo[channelID] or {r=0xff/255, g=0xc0/255, b=0xc0/255}
 end
 
+local function openConfigCategory()
+    local categoryFrame = MessageClassifierConfigFrame and MessageClassifierConfigFrame.blizOptions
+    if not categoryFrame then
+        return
+    end
+
+    local categoryID = MessageClassifierConfigFrame.blizOptionsCategoryID or categoryFrame.name or categoryFrame
+    if Settings and Settings.OpenToCategory and categoryID then
+        Settings.OpenToCategory(categoryID)
+        return
+    end
+
+    if InterfaceOptionsFrame then
+        InterfaceOptionsFrame:Show()
+    end
+    if InterfaceOptionsFrame_OpenToCategory then
+        InterfaceOptionsFrame_OpenToCategory(categoryFrame)
+        InterfaceOptionsFrame_OpenToCategory(categoryFrame)
+    end
+end
+
 local function formatMsg(msg)
     local text = string.format("|cffffa900%s|r |Hchannel:channel:%s|h[%s]|h [|Hplayer:%s:0|h%s|h] %s", date("%H:%M:%S", msg.updateTime), msg.channelID, shortChannelName(msg.channel), msg.authorFullName, msg.author, msg.content)
     if msg.count > 1 then
@@ -471,9 +492,7 @@ function MessageClassifierBrowser:CreateView()
     self.settingButton:SetHeight(20)
     self.settingButton:SetRelativeWidth(0.15)
     self.settingButton:SetCallback("OnClick", function(self)
-        InterfaceOptionsFrame:Show()
-        InterfaceOptionsFrame_OpenToCategory(MessageClassifierConfigFrame.blizOptions)
-        InterfaceOptionsFrame_OpenToCategory(MessageClassifierConfigFrame.blizOptions)
+        openConfigCategory()
     end)
     self:AddChild(self.settingButton)
 

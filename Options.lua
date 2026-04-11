@@ -407,7 +407,7 @@ function MessageClassifierConfigFrame:loadConfig()
 
 
     self.registeredOptionsTable = AceConfigRegistry:RegisterOptionsTable(ADDON_NAME, self.configTable)
-    self.blizOptions = AceConfigDialog:AddToBlizOptions(ADDON_NAME, L["CONFIG_PAGE_TITLE"])
+    self.blizOptions, self.blizOptionsCategoryID = AceConfigDialog:AddToBlizOptions(ADDON_NAME, L["CONFIG_PAGE_TITLE"])
 end
 
 function MessageClassifierConfigFrame:updateRuleSetView()
