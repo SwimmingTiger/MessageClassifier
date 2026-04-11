@@ -6,6 +6,7 @@
 ## Notes: MessageClassifier
 ## Version: @project-version@
 ## Author: SwimmingTiger (NGA: hu60)
+## IconTexture: Interface\AddOns\MessageClassifier\img\logo
 ## SavedVariables: MessageClassifierConfig
 ## X-Curse-Project-ID: 348875
 ## X-WoWI-ID: 25436
