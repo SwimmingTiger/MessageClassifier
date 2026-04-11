@@ -559,13 +559,27 @@ function MessageClassifierBrowser:CreateView()
         editbox:SetText("/"..sendType.." ")
     end
     local linkHandle = {
-        ['channel:channel:YELL'] = function()
+        ['channel:channel:YELL'] = function(_, _, _, _)
             sendMessageTo('yell')
         end
     }
+    local function defaultHyperlinkHandler(frame, link, text, button)
+        if SetItemRef then
+            SetItemRef(link, text, button, frame)
+            return
+        end
+        if ChatFrame_OnHyperlinkShow then
+            ChatFrame_OnHyperlinkShow(frame, link, text, button)
+        end
+    end
     function self.msgView:clickHyperlink(link, ...)
-        local func = linkHandle[link] or ChatFrame_OnHyperlinkShow
-        func(self, link, ...)
+        local text, button = ...
+        local func = linkHandle[link]
+        if func then
+            func(self, link, text, button)
+            return
+        end
+        defaultHyperlinkHandler(self, link, text, button)
     end
     self.msgView:SetScript("OnHyperlinkClick", self.msgView.clickHyperlink)
     self.msgView:SetScript("OnHyperlinkEnter", self.msgView.showHyperlink)
