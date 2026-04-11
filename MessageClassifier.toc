@@ -1,7 +1,4 @@
-﻿## Interface: 20501
-## Interface-Retail: 90005
-## Interface-Classic: 11307
-## Interface-BC: 20501
+﻿## Interface: 120001, 50503, 38001, 20505, 11508
 
 ## Title: Message Classifier
 ## Title-zhCN: 聊天消息分类去重
