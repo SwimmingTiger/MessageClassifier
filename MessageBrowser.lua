@@ -629,6 +629,14 @@ function MessageClassifierBrowser:updateMsgView()
 end
 
 function MessageClassifierBrowser:CreateView()
+    -- AceGUI creates the window on FULLSCREEN_DIALOG, which puts it above Blizzard's
+    -- dialogs (the game menu opened with ESC, static popups, ...). Keep it one strata
+    -- lower: still above the game UI, but below those dialogs.
+    if self.frame then
+        self.frame:SetFrameStrata("HIGH")
+        self.frame:SetFrameLevel(10)
+    end
+
     self:SetTitle(L["BROWSER_TITLE"])
     self:updateStatusBar()
     self:SetLayout("Flow")
