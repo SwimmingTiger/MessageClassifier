@@ -2,4 +2,4 @@
 cd "$(dirname "$0")"
 
 echo "Packaging addon"
-bash ./script/BigWigsMods-release.sh -g retail
+bash ./script/BigWigsMods-release.sh
